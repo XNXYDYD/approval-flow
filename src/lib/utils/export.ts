@@ -109,9 +109,15 @@ function formatDate(iso: string): string {
 }
 
 /**
- * 转义 CSV 中的特殊字符
+ * 转义 CSV 中的特殊字符，并防范公式注入
+ * 以 = + - @ 开头的单元格内容会被 Excel 等应用解释为公式，
+ * 因此前置单引号以阻止公式执行
  */
 export function escapeCSV(value: string): string {
+  // 防范 CSV 公式注入（Formula Injection）
+  if (/^[=+\-@]/.test(value)) {
+    value = `'${value}`;
+  }
   if (value.includes(',') || value.includes('"') || value.includes('\n')) {
     return `"${value.replace(/"/g, '""')}"`;
   }

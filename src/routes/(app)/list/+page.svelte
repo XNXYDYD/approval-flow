@@ -49,6 +49,17 @@
   let typeFilter: OvertimeType | '' = '';
   let keyword = '';
 
+  // URL 参数白名单，防止注入非法值
+  const VALID_STATUSES: ApplicationStatus[] = [
+    'draft',
+    'pending',
+    'approved',
+    'rejected',
+    'cancelled',
+  ];
+  const VALID_TYPES: OvertimeType[] = ['workday', 'weekend', 'holiday'];
+  const VALID_MODALS = ['form', 'detail'] as const;
+
   // 批量操作选中的 ID 集合
   let selectedIds: Set<string> = new Set();
   let batchProcessing = false;
@@ -72,19 +83,31 @@
     await ensureApplicationsLoaded();
     loading = false;
     const params = $page.url.searchParams;
-    const urlStatus = params.get('status') as ApplicationStatus | null;
-    const urlType = params.get('type') as OvertimeType | null;
+
+    // URL 参数白名单校验，防止非法值注入
+    const rawStatus = params.get('status');
+    if (rawStatus && (VALID_STATUSES as string[]).includes(rawStatus)) {
+      statusFilter = rawStatus as ApplicationStatus;
+    }
+
+    const rawType = params.get('type');
+    if (rawType && (VALID_TYPES as string[]).includes(rawType)) {
+      typeFilter = rawType as OvertimeType;
+    }
+
     const urlKeyword = params.get('q');
-    if (urlStatus) statusFilter = urlStatus;
-    if (urlType) typeFilter = urlType;
     if (urlKeyword) keyword = urlKeyword;
-    if (params.get('modal') === 'form') {
-      openFormModal();
-    } else if (params.get('modal') === 'detail') {
-      const id = params.get('id');
-      if (id) {
-        const app = $applications.find((a) => a.id === id);
-        if (app) openDetailModal(app);
+
+    const urlModal = params.get('modal');
+    if (urlModal && VALID_MODALS.includes(urlModal as (typeof VALID_MODALS)[number])) {
+      if (urlModal === 'form') {
+        openFormModal();
+      } else if (urlModal === 'detail') {
+        const id = params.get('id');
+        if (id) {
+          const app = $applications.find((a) => a.id === id);
+          if (app) openDetailModal(app);
+        }
       }
     }
   });

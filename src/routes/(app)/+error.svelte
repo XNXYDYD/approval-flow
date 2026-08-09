@@ -1,7 +1,6 @@
 <script lang="ts">
-  export const params: Record<string, string> = {};
   import { page } from '$app/stores';
-  import { toastError } from '$lib/stores/toast';
+  import { reportError } from '$lib/stores/error';
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
   import RefreshCw from 'lucide-svelte/icons/refresh-cw';
   import ArrowLeft from 'lucide-svelte/icons/arrow-left';
@@ -19,6 +18,12 @@
       window.history.back();
     } else {
       window.location.href = '/';
+    }
+  }
+
+  function handleReport() {
+    if (error) {
+      reportError(error as Error, { description: '应用页面错误', silent: true });
     }
   }
 </script>
@@ -54,5 +59,12 @@
         返回
       </button>
     </div>
+    <button
+      type="button"
+      on:click={handleReport}
+      class="mt-3 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+    >
+      报告此问题
+    </button>
   </div>
 </div>

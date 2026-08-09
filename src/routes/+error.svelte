@@ -1,7 +1,7 @@
 <script lang="ts">
-  export const params: Record<string, string> = {};
   import { page } from '$app/stores';
-  import { toastError } from '$lib/stores/toast';
+  import { reportError } from '$lib/stores/error';
+  import { dev } from '$app/environment';
   import Home from 'lucide-svelte/icons/home';
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
   import RefreshCw from 'lucide-svelte/icons/refresh-cw';
@@ -21,8 +21,9 @@
   }
 
   function handleReport() {
-    const message = error instanceof Error ? error.message : (error?.message ?? '未知错误');
-    toastError('错误已记录', message);
+    if (error) {
+      reportError(error as Error, { description: '页面级错误', silent: true });
+    }
   }
 </script>
 
@@ -45,13 +46,13 @@
     </div>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 space-y-4">
-      <div
-        class="text-sm text-gray-600 bg-gray-50 rounded-md p-3 font-mono break-all max-h-32 overflow-auto"
-      >
-        {error instanceof Error && error.stack
-          ? error.stack.split('\n').slice(0, 3).join('\n')
-          : '无详细错误信息'}
-      </div>
+      {#if dev && error instanceof Error && error.stack}
+        <div
+          class="text-xs text-gray-500 bg-gray-50 rounded-md p-3 font-mono break-all max-h-32 overflow-auto"
+        >
+          {error.stack.split('\n').slice(0, 3).join('\n')}
+        </div>
+      {/if}
 
       <div class="flex items-center gap-2">
         <button
