@@ -19,6 +19,7 @@
   import { batchUpdateApplications } from '$lib/api/application';
   import { CURRENT_USER } from '$lib/mock/users';
   import { toastSuccess, toastError } from '$lib/stores/toast';
+  import { exportToJSON, exportToCSV } from '$lib/utils/export';
   import ClipboardList from 'lucide-svelte/icons/clipboard-list';
   import FileEdit from 'lucide-svelte/icons/file-edit';
   import CheckCircle from 'lucide-svelte/icons/check-circle';
@@ -26,6 +27,9 @@
   import ArchiveX from 'lucide-svelte/icons/archive-x';
   import Trash2 from 'lucide-svelte/icons/trash-2';
   import ListChecks from 'lucide-svelte/icons/list-checks';
+  import Download from 'lucide-svelte/icons/download';
+  import FileJson from 'lucide-svelte/icons/file-json';
+  import FileSpreadsheet from 'lucide-svelte/icons/file-spreadsheet';
 
   // 弹窗控制状态
   let showFormModal = false;
@@ -47,9 +51,11 @@
   // Select 值变化处理
   function onStatusChange(selected: { value: string; label?: string } | undefined) {
     statusFilter = (selected?.value ?? '') as ApplicationStatus;
+    clearSelection();
   }
   function onTypeChange(selected: { value: string; label?: string } | undefined) {
     typeFilter = (selected?.value ?? '') as OvertimeType;
+    clearSelection();
   }
   function toSelected(value: string): { value: string; label?: string } | undefined {
     if (!value) return undefined;
@@ -242,6 +248,46 @@
   }
 
   $: batchActionsDisabled = selectedCount === 0 || batchProcessing;
+
+  function handleExportJSON() {
+    const data = getFilteredApplications();
+    if (data.length === 0) {
+      toastError('导出失败', '没有可导出的数据');
+      return;
+    }
+    try {
+      exportToJSON(data, `加班申请_${new Date().toISOString().slice(0, 10)}`);
+      toastSuccess('导出成功', `已导出 ${data.length} 条记录为 JSON 格式`);
+    } catch (e) {
+      toastError('导出失败', '请稍后重试');
+    }
+  }
+
+  function handleExportCSV() {
+    const data = getFilteredApplications();
+    if (data.length === 0) {
+      toastError('导出失败', '没有可导出的数据');
+      return;
+    }
+    try {
+      exportToCSV(data, `加班申请_${new Date().toISOString().slice(0, 10)}`);
+      toastSuccess('导出成功', `已导出 ${data.length} 条记录为 CSV 格式`);
+    } catch (e) {
+      toastError('导出失败', '请稍后重试');
+    }
+  }
+
+  function getFilteredApplications(): OvertimeApplication[] {
+    return $applications.filter((app) => {
+      if (statusFilter && app.status !== statusFilter) return false;
+      if (typeFilter && app.overtimeType !== typeFilter) return false;
+      if (keyword) {
+        const kw = keyword.toLowerCase();
+        return app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw);
+      }
+      return true;
+    });
+  }
 </script>
 
 <svelte:head>
@@ -254,10 +300,23 @@
       <ClipboardList class="h-5 w-5 text-primary" />
       申请列表
     </h1>
-    <Button on:click={openFormModal} size="sm">
-      <FileEdit class="mr-2 h-4 w-4" />
-      发起申请
-    </Button>
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1">
+        <Button on:click={handleExportJSON} size="sm" variant="outline" title="导出为 JSON 文件">
+          <FileJson class="mr-2 h-4 w-4" />
+          导出 JSON
+        </Button>
+        <Button on:click={handleExportCSV} size="sm" variant="outline" title="导出为 Excel 文件">
+          <FileSpreadsheet class="mr-2 h-4 w-4" />
+          导出 Excel
+        </Button>
+      </div>
+      <div class="w-px h-6 bg-border mx-1" />
+      <Button on:click={openFormModal} size="sm">
+        <FileEdit class="mr-2 h-4 w-4" />
+        发起申请
+      </Button>
+    </div>
   </div>
 
   <!-- 筛选器 -->

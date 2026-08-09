@@ -6,9 +6,16 @@
   import { Card, CardContent } from '$lib/components/ui/card';
   import { createEventDispatcher } from 'svelte';
 
-  export let app: OvertimeApplication;
+  export let app: OvertimeApplication | undefined = undefined;
+  export let item: OvertimeApplication | undefined = undefined;
   export let selectable: boolean = false;
   export let selected: boolean = false;
+
+  $: currentApp = item ?? app;
+
+  $: if (!currentApp) {
+    console.warn('ApplicationCard: 缺少 app 或 item prop');
+  }
 
   const dispatch = createEventDispatcher();
 
@@ -22,16 +29,20 @@
   }
 
   function handleClick() {
-    dispatch('open-detail', app);
+    dispatch('open-detail', currentApp);
   }
 
-  function handleCardKeydown(e: Event) {
-    if ((e as KeyboardEvent).key === 'Enter') handleClick();
+  function handleCardKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
   }
 
   function handleCheckboxChange(e: Event) {
+    if (!currentApp) return;
     const checked = (e.target as HTMLInputElement).checked;
-    dispatch('toggle-select', { appId: app.id, selected: checked });
+    dispatch('toggle-select', { appId: currentApp.id, selected: checked });
   }
 
   function stopPropagation(e: Event) {
@@ -39,49 +50,56 @@
   }
 </script>
 
-<div
+{#if currentApp}
+<button
+  type="button"
   on:click={handleClick}
   on:keydown={handleCardKeydown}
-  role="button"
-  tabindex={0}
-  class="block cursor-pointer transition-all duration-200"
+  aria-label="查看 {currentApp.applicant.name} 的加班申请详情"
+  class="block w-full cursor-pointer transition-all duration-200 bg-transparent border-0 p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
 >
-  <Card class="border-transparent hover:border-primary/30 hover:shadow-md transition-all duration-200">
+  <Card class="border border-border/60 hover:border-primary/30 hover:shadow-md transition-all duration-200">
     <CardContent class="p-4">
     <div class="flex items-start gap-3">
       {#if selectable}
-        <label class="flex items-center pt-0.5 shrink-0 cursor-pointer" on:click={stopPropagation}>
+        <span
+          role="presentation"
+          class="flex items-center pt-0.5 shrink-0 cursor-pointer"
+          on:click={stopPropagation}
+        >
           <input
             type="checkbox"
             bind:checked={selected}
             on:change={handleCheckboxChange}
             class="h-4 w-4 rounded border-gray-300 accent-primary"
+            aria-label="选择此申请"
           />
-        </label>
+        </span>
       {/if}
       <div class="flex-1 min-w-0">
         <div class="flex justify-between items-start mb-2">
           <div class="flex items-center gap-2">
-            <span class="font-medium text-gray-800">{app.applicant.name}</span>
-            <span class="text-xs text-muted-foreground">{app.applicant.department.name}</span>
+            <span class="font-medium text-gray-800">{currentApp.applicant.name}</span>
+            <span class="text-xs text-muted-foreground">{currentApp.applicant.department.name}</span>
           </div>
-          <StatusBadge status={app.status} />
+          <StatusBadge status={currentApp.status} />
         </div>
         <div class="text-sm text-muted-foreground space-y-1">
           <p>
-            <span class="text-muted-foreground/90">{LABEL_MAP[app.overtimeType]}</span>
+            <span class="text-muted-foreground/90">{LABEL_MAP[currentApp.overtimeType]}</span>
             <span class="mx-2 text-border">|</span>
-            <span>时长 {formatDuration(app.duration)}</span>
+            <span>时长 {formatDuration(currentApp.duration)}</span>
             <span class="mx-2 text-border">|</span>
-            <span>{LABEL_MAP[app.compensation]}</span>
+            <span>{LABEL_MAP[currentApp.compensation]}</span>
           </p>
           <p class="text-muted-foreground text-xs">
-            {formatTime(app.startTime)} ~ {formatTime(app.endTime)}
+            {formatTime(currentApp.startTime)} ~ {formatTime(currentApp.endTime)}
           </p>
-          <p class="text-muted-foreground truncate mt-1">{app.reason}</p>
+          <p class="text-muted-foreground truncate mt-1">{currentApp.reason}</p>
         </div>
       </div>
     </div>
     </CardContent>
   </Card>
-</div>
+</button>
+{/if}

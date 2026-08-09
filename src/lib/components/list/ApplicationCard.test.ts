@@ -11,7 +11,6 @@ const sampleApp = apps[0];
 describe('ApplicationCard 组件', () => {
   it('渲染申请人姓名和部门', () => {
     const { container } = render(ApplicationCard, { props: { app: sampleApp } });
-    // getByText 可能返回多个，用第一个
     const names = getAllByText(container as HTMLElement, sampleApp.applicant.name);
     expect(names.length).toBeGreaterThan(0);
     const depts = getAllByText(container as HTMLElement, sampleApp.applicant.department.name);
@@ -35,9 +34,9 @@ describe('ApplicationCard 组件', () => {
     const dispatched: CustomEvent[] = [];
     component.$on('open-detail', (e: Event) => dispatched.push(e as CustomEvent));
 
-    // 点击 Card 根节点的第一个子元素（实际渲染的 Card 根 div）
-    const card = container.firstElementChild as HTMLElement;
-    await fireEvent.click(card);
+    const button = container.querySelector('button');
+    expect(button).not.toBeNull();
+    await fireEvent.click(button!);
 
     expect(dispatched).toHaveLength(1);
     expect(dispatched[0].detail).toEqual(sampleApp);
@@ -48,27 +47,55 @@ describe('ApplicationCard 组件', () => {
     const dispatched: CustomEvent[] = [];
     component.$on('open-detail', (e: Event) => dispatched.push(e as CustomEvent));
 
-    const card = container.firstElementChild as HTMLElement;
-    await fireEvent.keyDown(card, { key: 'Enter' });
+    const button = container.querySelector('button');
+    expect(button).not.toBeNull();
+    await fireEvent.keyDown(button!, { key: 'Enter' });
 
     expect(dispatched).toHaveLength(1);
     expect(dispatched[0].detail).toEqual(sampleApp);
   });
 
-  it('非 Enter 键不派发事件', async () => {
+  it('空格键也派发 open-detail 事件', async () => {
     const { component, container } = render(ApplicationCard, { props: { app: sampleApp } });
     const dispatched: CustomEvent[] = [];
     component.$on('open-detail', (e: Event) => dispatched.push(e as CustomEvent));
 
-    const card = container.firstElementChild as HTMLElement;
-    await fireEvent.keyDown(card, { key: 'Escape' });
+    const button = container.querySelector('button');
+    expect(button).not.toBeNull();
+    await fireEvent.keyDown(button!, { key: ' ' });
+
+    expect(dispatched).toHaveLength(1);
+  });
+
+  it('非 Enter/空格 键不派发事件', async () => {
+    const { component, container } = render(ApplicationCard, { props: { app: sampleApp } });
+    const dispatched: CustomEvent[] = [];
+    component.$on('open-detail', (e: Event) => dispatched.push(e as CustomEvent));
+
+    const button = container.querySelector('button');
+    expect(button).not.toBeNull();
+    await fireEvent.keyDown(button!, { key: 'Escape' });
 
     expect(dispatched).toHaveLength(0);
   });
 
-  it('tabindex 为 0（可键盘聚焦）', () => {
+  it('使用原生 button 元素作为可交互容器（无障碍性）', () => {
     const { container } = render(ApplicationCard, { props: { app: sampleApp } });
-    const card = container.querySelector('[role="button"]');
-    expect(card).toHaveAttribute('tabindex', '0');
+    const button = container.querySelector('button');
+    expect(button).not.toBeNull();
+    expect(button).toHaveAttribute('type', 'button');
+  });
+
+  it('提供 aria-label 描述', () => {
+    const { container } = render(ApplicationCard, { props: { app: sampleApp } });
+    const button = container.querySelector('button');
+    expect(button).not.toBeNull();
+    expect(button).toHaveAttribute('aria-label');
+  });
+
+  it('支持 item prop（虚拟列表场景）', () => {
+    const { container } = render(ApplicationCard, { props: { item: sampleApp } });
+    const names = getAllByText(container as HTMLElement, sampleApp.applicant.name);
+    expect(names.length).toBeGreaterThan(0);
   });
 });

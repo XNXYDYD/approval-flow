@@ -60,29 +60,24 @@
   <!-- 图表区域 -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <Card><CardContent class="p-5">
-      <h2 class="text-base font-medium mb-3">加班类型分布</h2>
-      <OvertimeChart statistics={$statistics} chartType="pie" dimension="type" />
+      <OvertimeChart statistics={$statistics} chartType="pie" dimension="type" title="加班类型分布" />
     </CardContent></Card>
 
     <Card><CardContent class="p-5">
-      <h2 class="text-base font-medium mb-3">申请状态统计</h2>
-      <OvertimeChart statistics={$statistics} chartType="bar" dimension="status" />
+      <OvertimeChart statistics={$statistics} chartType="bar" dimension="status" title="申请状态统计" />
     </CardContent></Card>
 
     <Card><CardContent class="p-5">
-      <h2 class="text-base font-medium mb-3">补偿方式分布</h2>
-      <OvertimeChart statistics={$statistics} chartType="pie" dimension="compensation" />
+      <OvertimeChart statistics={$statistics} chartType="pie" dimension="compensation" title="补偿方式分布" />
     </CardContent></Card>
 
     <Card><CardContent class="p-5">
-      <h2 class="text-base font-medium mb-3">部门加班统计</h2>
-      <OvertimeChart statistics={$statistics} chartType="bar" dimension="department" />
+      <OvertimeChart statistics={$statistics} chartType="bar" dimension="department" title="部门加班统计" />
     </CardContent></Card>
   </div>
 
   <!-- 趋势图（全宽） -->
   <Card><CardContent class="p-5">
-    <h2 class="text-base font-medium mb-3">加班申请趋势</h2>
-    <OvertimeChart statistics={$statistics} chartType="line" dimension="trend" />
+    <OvertimeChart statistics={$statistics} chartType="line" dimension="trend" title="加班申请趋势" />
   </CardContent></Card>
 </div>

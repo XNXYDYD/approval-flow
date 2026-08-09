@@ -8,7 +8,7 @@
   <Header />
   <div class="flex flex-1 min-h-0">
     <Sidebar />
-    <main class="app-scrollbar flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50">
+    <main class="app-scrollbar flex-1 min-h-0 overflow-y-auto px-6 pt-6 pb-3 bg-gray-50">
       <slot />
     </main>
   </div>

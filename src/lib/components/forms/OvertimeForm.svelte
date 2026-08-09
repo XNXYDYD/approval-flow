@@ -19,8 +19,6 @@
   export let formId: string = 'overtime-form';
   export let errors: ValidationErrors = {};
 
-  let dirty = false;
-
   const dispatch = createEventDispatcher();
 
   function getDraftField(key: string): string | number {
@@ -30,7 +28,6 @@
   }
 
   function setDraftField(key: string, value: unknown) {
-    dirty = true;
     draft.update((d) => ({ ...d, [key]: value }));
   }
 
@@ -70,18 +67,12 @@
   $: endTimeValue = String($draft.endTime ?? '');
   $: durationValue = $draft.duration ?? 0;
 
-  // 实时校验：用户开始填写后才校验，提供即时反馈
-  $: realtimeErrors = dirty ? validateApplication($draft) : {};
-
-  // 合并错误：以 prop errors 为主（提交/预览时的强校验），实时错误为辅
-  $: mergedErrors = { ...realtimeErrors, ...errors };
-
-  // 响应式错误信息：直接从合并后的错误中派生
-  $: overtimeTypeError = mergedErrors.overtimeType ?? '';
-  $: compensationError = mergedErrors.compensation ?? '';
-  $: startTimeError = mergedErrors.startTime ?? '';
-  $: endTimeError = mergedErrors.endTime ?? '';
-  $: reasonError = mergedErrors.reason ?? '';
+  // 校验错误：仅在预览申请时由父组件传入，不在字段变更时实时校验
+  $: overtimeTypeError = errors.overtimeType ?? '';
+  $: compensationError = errors.compensation ?? '';
+  $: startTimeError = errors.startTime ?? '';
+  $: endTimeError = errors.endTime ?? '';
+  $: reasonError = errors.reason ?? '';
 
   function handleSubmit() {
     const validationErrors = validateApplication($draft);

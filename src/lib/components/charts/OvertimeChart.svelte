@@ -2,10 +2,14 @@
   import * as echarts from 'echarts';
   import { onMount, onDestroy } from 'svelte';
   import { LABEL_MAP, type Statistics } from '$lib/types';
+  import { exportChartToPNG } from '$lib/utils/export';
+  import { toastSuccess, toastError } from '$lib/stores/toast';
+  import Download from 'lucide-svelte/icons/download';
 
   export let statistics: Statistics;
   export let chartType: 'pie' | 'bar' | 'line' = 'pie';
   export let dimension: 'type' | 'status' | 'compensation' | 'trend' | 'department' = 'type';
+  export let title: string = '';
 
   let container: HTMLElement;
   let chart: echarts.ECharts | null = null;
@@ -28,6 +32,19 @@
 
   function handleResize() {
     chart?.resize();
+  }
+
+  function handleExport() {
+    if (!chart) {
+      toastError('导出失败', '图表尚未初始化');
+      return;
+    }
+    try {
+      exportChartToPNG(chart, title || 'chart');
+      toastSuccess('导出成功', '图表已保存为 PNG 图片');
+    } catch (e) {
+      toastError('导出失败', '请稍后重试');
+    }
   }
 
   // 根据维度提取数据
@@ -100,4 +117,20 @@
   }
 </script>
 
-<div bind:this={container} class="w-full h-80"></div>
+<div class="relative w-full">
+  {#if title}
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-sm font-medium text-gray-700">{title}</h3>
+      <button
+        type="button"
+        on:click={handleExport}
+        class="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+        title="导出为 PNG 图片"
+      >
+        <Download class="h-3 w-3" />
+        导出
+      </button>
+    </div>
+  {/if}
+  <div bind:this={container} class="w-full h-72"></div>
+</div>

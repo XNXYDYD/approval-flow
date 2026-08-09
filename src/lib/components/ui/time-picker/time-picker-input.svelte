@@ -4,9 +4,9 @@
   import { onMount, createEventDispatcher } from "svelte";
 
   export let value: string = "";
-  export let placeholder: string = "选择时间";
+  export const placeholder: string = "选择时间";
   export let disabled: boolean = false;
-  export let id: string | null = null;
+  export const id: string | null = null;
   export let className: string = "";
 
   const dispatch = createEventDispatcher();
@@ -134,7 +134,10 @@
   });
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events, a11y-no-interactive-element-interactions -->
 <div 
+  role="application"
+  aria-label="时间选择器，使用方向键调整时间"
   class={cn(
     "flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors",
     "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
@@ -142,7 +145,6 @@
     className
   )}
   on:keydown={handleKeydown}
-  tabindex={-1}
 >
   {#each segments as segment, i}
     <div class="flex items-center">

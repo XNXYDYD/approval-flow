@@ -150,7 +150,7 @@
   {#if app}
     <div class="p-5 space-y-4">
       <!-- 顶部信息行 -->
-      <div class="flex justify-between items-center">
+      <div class="flex items-center gap-3">
         <span class="text-sm text-muted-foreground">编号 {app.id}</span>
         <StatusBadge status={app.status} />
       </div>

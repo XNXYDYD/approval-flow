@@ -24,9 +24,16 @@
 </script>
 
 <div class="relative inline-block w-full">
-  <div data-popover-trigger on:click={() => open = !open}>
+  <button
+    type="button"
+    data-popover-trigger
+    aria-expanded={open}
+    aria-haspopup="dialog"
+    on:click={() => open = !open}
+    class="bg-transparent border-0 p-0 cursor-pointer focus:outline-none"
+  >
     <slot name="trigger" />
-  </div>
+  </button>
   {#if open}
     <div
       data-popover-content
