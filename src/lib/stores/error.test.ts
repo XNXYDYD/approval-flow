@@ -7,7 +7,7 @@ import {
   clearErrors,
   safeExecute,
   safeExecuteAsync,
-  getUnhandledCount
+  getUnhandledCount,
 } from '$lib/stores/error';
 
 describe('error.ts 错误管理', () => {
@@ -92,7 +92,7 @@ describe('error.ts 错误管理', () => {
           throw new Error('失败');
         },
         '描述',
-        'fallback'
+        'fallback',
       );
       expect(result).toBe('fallback');
     });
@@ -117,7 +117,7 @@ describe('error.ts 错误管理', () => {
           throw new Error('失败');
         },
         '描述',
-        0
+        0,
       );
       expect(result).toBe(0);
     });

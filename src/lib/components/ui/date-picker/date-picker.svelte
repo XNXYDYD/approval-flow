@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Popover as PopoverPrimitive } from "bits-ui";
-  import { format, parseISO } from "date-fns";
-  import { cn, flyAndScale } from "$lib/utils";
-  import { Calendar } from "$lib/components/ui/calendar";
-  import { Button } from "$lib/components/ui/button";
-  import CalendarIcon from "lucide-svelte/icons/calendar";
-  import { createEventDispatcher } from "svelte";
+  import { Popover as PopoverPrimitive } from 'bits-ui';
+  import { format, parseISO } from 'date-fns';
+  import { cn, flyAndScale } from '$lib/utils';
+  import { Calendar } from '$lib/components/ui/calendar';
+  import { Button } from '$lib/components/ui/button';
+  import CalendarIcon from 'lucide-svelte/icons/calendar';
+  import { createEventDispatcher } from 'svelte';
 
-  export let value: string = "";
-  export let placeholder: string = "选择日期";
+  export let value: string = '';
+  export let placeholder: string = '选择日期';
   export let disabled: boolean = false;
   export let id: string | undefined = undefined;
 
@@ -50,16 +50,16 @@
     const result = new Date(date);
     result.setHours(hours, minutes, 0, 0);
     value = result.toISOString();
-    dispatch("change", result.toISOString());
+    dispatch('change', result.toISOString());
     open = false;
   }
 
-  function handleTimeChange(type: "hour" | "minute", val: string) {
+  function handleTimeChange(type: 'hour' | 'minute', val: string) {
     const num = parseInt(val, 10);
     if (Number.isNaN(num)) return;
 
     const base = selectedDate ? new Date(selectedDate) : new Date();
-    if (type === "hour") {
+    if (type === 'hour') {
       base.setHours(Math.min(23, Math.max(0, num)));
     } else {
       base.setMinutes(Math.min(59, Math.max(0, num)));
@@ -67,33 +67,33 @@
 
     selectedDate = base;
     value = base.toISOString();
-    dispatch("change", value);
+    dispatch('change', value);
   }
 
   function getFormattedDate() {
-    if (!value) return "";
+    if (!value) return '';
     try {
-      return format(parseISO(value), "yyyy/MM/dd HH:mm");
+      return format(parseISO(value), 'yyyy/MM/dd HH:mm');
     } catch {
-      return "";
+      return '';
     }
   }
 
   function getHour() {
-    if (!value) return "00";
+    if (!value) return '00';
     try {
-      return String(parseISO(value).getHours()).padStart(2, "0");
+      return String(parseISO(value).getHours()).padStart(2, '0');
     } catch {
-      return "00";
+      return '00';
     }
   }
 
   function getMinute() {
-    if (!value) return "00";
+    if (!value) return '00';
     try {
-      return String(parseISO(value).getMinutes()).padStart(2, "0");
+      return String(parseISO(value).getMinutes()).padStart(2, '0');
     } catch {
-      return "00";
+      return '00';
     }
   }
 </script>
@@ -106,9 +106,9 @@
       {id}
       variant="outline"
       class={cn(
-        "w-full justify-start text-left font-normal",
-        !value && "text-muted-foreground",
-        className
+        'w-full justify-start text-left font-normal',
+        !value && 'text-muted-foreground',
+        className,
       )}
       {disabled}
     >
@@ -128,15 +128,15 @@
     inTransition={flyAndScale}
     outTransition={flyAndScale}
   >
-    <Calendar selectedDate={selectedDate} onSelect={handleSelect} showOutsideDays={false} />
+    <Calendar {selectedDate} onSelect={handleSelect} showOutsideDays={false} />
     <div class="flex items-center justify-center gap-2 border-t p-3">
       <div class="flex items-center gap-1">
         <input
           type="text"
           maxlength="2"
           value={getHour()}
-          on:input={(e) => handleTimeChange("hour", e.currentTarget.value)}
-          on:change={(e) => handleTimeChange("hour", e.currentTarget.value)}
+          on:input={(e) => handleTimeChange('hour', e.currentTarget.value)}
+          on:change={(e) => handleTimeChange('hour', e.currentTarget.value)}
           class="w-12 rounded-md border border-input bg-transparent px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <span class="text-muted-foreground">:</span>
@@ -144,8 +144,8 @@
           type="text"
           maxlength="2"
           value={getMinute()}
-          on:input={(e) => handleTimeChange("minute", e.currentTarget.value)}
-          on:change={(e) => handleTimeChange("minute", e.currentTarget.value)}
+          on:input={(e) => handleTimeChange('minute', e.currentTarget.value)}
+          on:change={(e) => handleTimeChange('minute', e.currentTarget.value)}
           class="w-12 rounded-md border border-input bg-transparent px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>

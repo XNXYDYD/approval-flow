@@ -12,7 +12,13 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from '$lib/components/ui/select';
   import { LABEL_MAP } from '$lib/types';
   import type { ApplicationStatus, OvertimeType, OvertimeApplication } from '$lib/types';
   import { batchTransition } from '$lib/utils/status';
@@ -97,7 +103,7 @@
   $: filter = {
     status: statusFilter || undefined,
     type: typeFilter || undefined,
-    keyword: keyword || undefined
+    keyword: keyword || undefined,
   };
 
   // 筛选后的列表（与 ApplicationList 内部一致）
@@ -107,7 +113,9 @@
       if (typeFilter && app.overtimeType !== typeFilter) return false;
       if (keyword) {
         const kw = keyword.toLowerCase();
-        return app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw);
+        return (
+          app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw)
+        );
       }
       return true;
     })
@@ -209,33 +217,47 @@
   async function handleBatchAction(action: 'approve' | 'reject' | 'cancel') {
     if (selectedIds.size === 0) return;
 
-    const pendingApps = $applications.filter((a) => selectedIds.has(a.id) && a.status === 'pending');
+    const pendingApps = $applications.filter(
+      (a) => selectedIds.has(a.id) && a.status === 'pending',
+    );
     if (pendingApps.length === 0) return;
 
     const statusMap: Record<string, ApplicationStatus> = {
       approve: 'approved',
       reject: 'rejected',
-      cancel: 'cancelled'
+      cancel: 'cancelled',
     };
     const targetStatus = statusMap[action];
-    const actionLabels: Record<string, string> = { approve: '批量通过', reject: '批量驳回', cancel: '批量撤销' };
+    const actionLabels: Record<string, string> = {
+      approve: '批量通过',
+      reject: '批量驳回',
+      cancel: '批量撤销',
+    };
 
     batchProcessing = true;
     try {
-      const result = batchTransition(pendingApps, targetStatus, CURRENT_USER, `批量${actionLabels[action]}`);
+      const result = batchTransition(
+        pendingApps,
+        targetStatus,
+        CURRENT_USER,
+        `批量${actionLabels[action]}`,
+      );
       if (result.success.length > 0) {
         await batchUpdateApplications(
-          result.success.map((app) => ({ id: app.id, data: { status: app.status, approvals: app.approvals } }))
+          result.success.map((app) => ({
+            id: app.id,
+            data: { status: app.status, approvals: app.approvals },
+          })),
         );
       }
       toastSuccess(
         `${actionLabels[action]}完成`,
-        `成功 ${result.success.length} 条${result.failed.length > 0 ? `，失败 ${result.failed.length} 条` : ''}`
+        `成功 ${result.success.length} 条${result.failed.length > 0 ? `，失败 ${result.failed.length} 条` : ''}`,
       );
       if (result.failed.length > 0) {
         toastError(
           `${result.failed.length} 条记录处理失败`,
-          result.failed.map((f) => `${f.app.applicant.name}: ${f.reason}`).join('；')
+          result.failed.map((f) => `${f.app.applicant.name}: ${f.reason}`).join('；'),
         );
       }
       clearSelection();
@@ -283,7 +305,9 @@
       if (typeFilter && app.overtimeType !== typeFilter) return false;
       if (keyword) {
         const kw = keyword.toLowerCase();
-        return app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw);
+        return (
+          app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw)
+        );
       }
       return true;
     });
@@ -323,17 +347,14 @@
   <div class="bg-white p-4 rounded-lg shadow flex flex-wrap gap-3 items-end">
     <div class="flex flex-col gap-1">
       <Label for="status-filter" class="text-xs text-gray-500">状态</Label>
-      <Select
-        selected={toSelected(statusFilter)}
-        onSelectedChange={onStatusChange}
-      >
+      <Select selected={toSelected(statusFilter)} onSelectedChange={onStatusChange}>
         <SelectTrigger id="status-filter" class="h-9 w-32">
           <SelectValue placeholder="全部" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="" label="全部">全部</SelectItem>
-          {#each Object.entries(LABEL_MAP).filter(([k]) => ['draft','pending','approved','rejected','cancelled'].includes(k)) as [key, label]}
-            <SelectItem value={key} label={label}>{label}</SelectItem>
+          {#each Object.entries(LABEL_MAP).filter( ([k]) => ['draft', 'pending', 'approved', 'rejected', 'cancelled'].includes(k) ) as [key, label]}
+            <SelectItem value={key} {label}>{label}</SelectItem>
           {/each}
         </SelectContent>
       </Select>
@@ -341,10 +362,7 @@
 
     <div class="flex flex-col gap-1">
       <Label for="type-filter" class="text-xs text-gray-500">类型</Label>
-      <Select
-        selected={toSelected(typeFilter)}
-        onSelectedChange={onTypeChange}
-      >
+      <Select selected={toSelected(typeFilter)} onSelectedChange={onTypeChange}>
         <SelectTrigger id="type-filter" class="h-9 w-32">
           <SelectValue placeholder="全部" />
         </SelectTrigger>
@@ -359,12 +377,16 @@
 
     <div class="flex flex-col gap-1 flex-1 min-w-[200px] max-w-[300px]">
       <Label for="keyword-filter" class="text-xs text-gray-500">搜索</Label>
-      <Input id="keyword-filter" type="text" bind:value={keyword} placeholder="搜索申请人或事由..." class="h-9" />
+      <Input
+        id="keyword-filter"
+        type="text"
+        bind:value={keyword}
+        placeholder="搜索申请人或事由..."
+        class="h-9"
+      />
     </div>
 
-    <Button on:click={resetFilter} variant="outline" size="sm">
-      重置
-    </Button>
+    <Button on:click={resetFilter} variant="outline" size="sm">重置</Button>
 
     <Button
       on:click={toggleBatchMode}
@@ -379,7 +401,9 @@
 
   <!-- 批量操作栏 -->
   {#if batchMode && hasSelectable}
-    <div class="bg-white rounded-lg shadow border border-primary/20 p-3 flex items-center justify-between gap-4">
+    <div
+      class="bg-white rounded-lg shadow border border-primary/20 p-3 flex items-center justify-between gap-4"
+    >
       <div class="flex items-center gap-3">
         <span class="text-sm text-muted-foreground">
           已选中 <span class="font-semibold text-primary">{selectedCount}</span> 条待审批申请

@@ -21,7 +21,7 @@
   }
 
   function handleReport() {
-    const message = error instanceof Error ? error.message : error?.message ?? '未知错误';
+    const message = error instanceof Error ? error.message : (error?.message ?? '未知错误');
     toastError('错误已记录', message);
   }
 </script>
@@ -38,12 +38,16 @@
       </div>
       <h1 class="text-2xl font-bold text-gray-800 mb-2">页面出错了</h1>
       <p class="text-gray-500">
-        {error instanceof Error ? error.message : error?.message ?? '很抱歉，页面加载时出现了问题'}
+        {error instanceof Error
+          ? error.message
+          : (error?.message ?? '很抱歉，页面加载时出现了问题')}
       </p>
     </div>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 space-y-4">
-      <div class="text-sm text-gray-600 bg-gray-50 rounded-md p-3 font-mono break-all max-h-32 overflow-auto">
+      <div
+        class="text-sm text-gray-600 bg-gray-50 rounded-md p-3 font-mono break-all max-h-32 overflow-auto"
+      >
         {error instanceof Error && error.stack
           ? error.stack.split('\n').slice(0, 3).join('\n')
           : '无详细错误信息'}
@@ -77,8 +81,6 @@
       </button>
     </div>
 
-    <p class="mt-6 text-center text-xs text-gray-400">
-      如果问题持续出现，请联系技术支持
-    </p>
+    <p class="mt-6 text-center text-xs text-gray-400">如果问题持续出现，请联系技术支持</p>
   </div>
 </div>

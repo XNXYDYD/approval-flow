@@ -2,7 +2,7 @@ import type {
   OvertimeApplication,
   OvertimeType,
   Compensation,
-  ApplicationStatus
+  ApplicationStatus,
 } from '$lib/types';
 import { MOCK_USERS } from './users';
 
@@ -15,7 +15,7 @@ const reasons = [
   '系统故障排查与修复，保障线上服务稳定',
   '客户演示准备，完善产品功能与文档',
   '性能优化专项，处理数据库慢查询问题',
-  '版本发布前的回归测试与bug修复'
+  '版本发布前的回归测试与bug修复',
 ];
 
 /**
@@ -103,10 +103,16 @@ export function generateMockApplications(count = 60): OvertimeApplication[] {
                 approver: MOCK_USERS[1],
                 action: status === 'approved' ? 'approve' : 'reject',
                 comment: status === 'approved' ? '同意' : '事由不充分，请补充',
-                timestamp: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 14, 0).toISOString()
-              }
+                timestamp: new Date(
+                  date.getFullYear(),
+                  date.getMonth(),
+                  date.getDate(),
+                  14,
+                  0,
+                ).toISOString(),
+              },
             ]
-          : []
+          : [],
     });
   }
 

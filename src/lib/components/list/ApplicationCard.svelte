@@ -24,7 +24,7 @@
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 
@@ -51,55 +51,59 @@
 </script>
 
 {#if currentApp}
-<button
-  type="button"
-  on:click={handleClick}
-  on:keydown={handleCardKeydown}
-  aria-label="查看 {currentApp.applicant.name} 的加班申请详情"
-  class="block w-full cursor-pointer transition-all duration-200 bg-transparent border-0 p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
->
-  <Card class="border border-border/60 hover:border-primary/30 hover:shadow-md transition-all duration-200">
-    <CardContent class="p-4">
-    <div class="flex items-start gap-3">
-      {#if selectable}
-        <span
-          role="presentation"
-          class="flex items-center pt-0.5 shrink-0 cursor-pointer"
-          on:click={stopPropagation}
-        >
-          <input
-            type="checkbox"
-            bind:checked={selected}
-            on:change={handleCheckboxChange}
-            class="h-4 w-4 rounded border-gray-300 accent-primary"
-            aria-label="选择此申请"
-          />
-        </span>
-      {/if}
-      <div class="flex-1 min-w-0">
-        <div class="flex justify-between items-start mb-2">
-          <div class="flex items-center gap-2">
-            <span class="font-medium text-gray-800">{currentApp.applicant.name}</span>
-            <span class="text-xs text-muted-foreground">{currentApp.applicant.department.name}</span>
+  <button
+    type="button"
+    on:click={handleClick}
+    on:keydown={handleCardKeydown}
+    aria-label="查看 {currentApp.applicant.name} 的加班申请详情"
+    class="block w-full cursor-pointer transition-all duration-200 bg-transparent border-0 p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+  >
+    <Card
+      class="border border-border/60 hover:border-primary/30 hover:shadow-md transition-all duration-200"
+    >
+      <CardContent class="p-4">
+        <div class="flex items-start gap-3">
+          {#if selectable}
+            <span
+              role="presentation"
+              class="flex items-center pt-0.5 shrink-0 cursor-pointer"
+              on:click={stopPropagation}
+            >
+              <input
+                type="checkbox"
+                bind:checked={selected}
+                on:change={handleCheckboxChange}
+                class="h-4 w-4 rounded border-gray-300 accent-primary"
+                aria-label="选择此申请"
+              />
+            </span>
+          {/if}
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-start mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-medium text-gray-800">{currentApp.applicant.name}</span>
+                <span class="text-xs text-muted-foreground"
+                  >{currentApp.applicant.department.name}</span
+                >
+              </div>
+              <StatusBadge status={currentApp.status} />
+            </div>
+            <div class="text-sm text-muted-foreground space-y-1">
+              <p>
+                <span class="text-muted-foreground/90">{LABEL_MAP[currentApp.overtimeType]}</span>
+                <span class="mx-2 text-border">|</span>
+                <span>时长 {formatDuration(currentApp.duration)}</span>
+                <span class="mx-2 text-border">|</span>
+                <span>{LABEL_MAP[currentApp.compensation]}</span>
+              </p>
+              <p class="text-muted-foreground text-xs">
+                {formatTime(currentApp.startTime)} ~ {formatTime(currentApp.endTime)}
+              </p>
+              <p class="text-muted-foreground truncate mt-1">{currentApp.reason}</p>
+            </div>
           </div>
-          <StatusBadge status={currentApp.status} />
         </div>
-        <div class="text-sm text-muted-foreground space-y-1">
-          <p>
-            <span class="text-muted-foreground/90">{LABEL_MAP[currentApp.overtimeType]}</span>
-            <span class="mx-2 text-border">|</span>
-            <span>时长 {formatDuration(currentApp.duration)}</span>
-            <span class="mx-2 text-border">|</span>
-            <span>{LABEL_MAP[currentApp.compensation]}</span>
-          </p>
-          <p class="text-muted-foreground text-xs">
-            {formatTime(currentApp.startTime)} ~ {formatTime(currentApp.endTime)}
-          </p>
-          <p class="text-muted-foreground truncate mt-1">{currentApp.reason}</p>
-        </div>
-      </div>
-    </div>
-    </CardContent>
-  </Card>
-</button>
+      </CardContent>
+    </Card>
+  </button>
 {/if}

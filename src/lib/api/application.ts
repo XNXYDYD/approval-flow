@@ -24,7 +24,7 @@ export async function fetchApplicationById(id: string): Promise<OvertimeApplicat
 /** 创建新申请 */
 export async function createApplication(
   data: Partial<OvertimeApplication>,
-  applicant: Applicant
+  applicant: Applicant,
 ): Promise<OvertimeApplication> {
   const now = new Date().toISOString();
   const record: OvertimeApplication = {
@@ -39,7 +39,7 @@ export async function createApplication(
     status: 'pending',
     createdAt: now,
     updatedAt: now,
-    approvals: []
+    approvals: [],
   };
   db = [record, ...db];
   return delay(record);
@@ -48,17 +48,17 @@ export async function createApplication(
 /** 更新申请（状态流转等） */
 export async function updateApplication(
   id: string,
-  updates: Partial<OvertimeApplication>
+  updates: Partial<OvertimeApplication>,
 ): Promise<OvertimeApplication | undefined> {
   db = db.map((app) =>
-    app.id === id ? { ...app, ...updates, updatedAt: new Date().toISOString() } : app
+    app.id === id ? { ...app, ...updates, updatedAt: new Date().toISOString() } : app,
   );
   return delay(db.find((a) => a.id === id));
 }
 
 /** 批量更新申请 */
 export async function batchUpdateApplications(
-  updates: Array<{ id: string; data: Partial<OvertimeApplication> }>
+  updates: Array<{ id: string; data: Partial<OvertimeApplication> }>,
 ): Promise<OvertimeApplication[]> {
   const now = new Date().toISOString();
   const ids = new Set(updates.map((u) => u.id));

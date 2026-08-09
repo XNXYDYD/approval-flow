@@ -16,7 +16,7 @@ let counter = 0;
 
 export function reportError(
   error: Error | unknown,
-  options: { description?: string; silent?: boolean } = {}
+  options: { description?: string; silent?: boolean } = {},
 ): string {
   const err = error instanceof Error ? error : new Error(String(error));
   const id = `err-${Date.now()}-${++counter}`;
@@ -27,7 +27,7 @@ export function reportError(
     description: options.description,
     stack: err.stack,
     timestamp: Date.now(),
-    handled: false
+    handled: false,
   };
 
   errors.update((prev) => [appError, ...prev]);
@@ -42,9 +42,7 @@ export function reportError(
 }
 
 export function markErrorHandled(id: string) {
-  errors.update((prev) =>
-    prev.map((e) => (e.id === id ? { ...e, handled: true } : e))
-  );
+  errors.update((prev) => prev.map((e) => (e.id === id ? { ...e, handled: true } : e)));
 }
 
 export function clearErrors() {
@@ -59,11 +57,7 @@ export function getUnhandledCount(): number {
   return count;
 }
 
-export function safeExecute<T>(
-  fn: () => T,
-  errorMessage?: string,
-  fallback?: T
-): T | undefined {
+export function safeExecute<T>(fn: () => T, errorMessage?: string, fallback?: T): T | undefined {
   try {
     return fn();
   } catch (e) {
@@ -75,7 +69,7 @@ export function safeExecute<T>(
 export async function safeExecuteAsync<T>(
   fn: () => Promise<T>,
   errorMessage?: string,
-  fallback?: T
+  fallback?: T,
 ): Promise<T | undefined> {
   try {
     return await fn();

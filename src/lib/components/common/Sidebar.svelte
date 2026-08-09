@@ -14,7 +14,7 @@
   const navItems: NavItem[] = [
     { href: '/', label: '首页', icon: Home },
     { href: '/list', label: '申请列表', icon: ClipboardList },
-    { href: '/statistics', label: '统计报表', icon: BarChart3 }
+    { href: '/statistics', label: '统计报表', icon: BarChart3 },
   ];
 
   // 判断当前路由是否激活
@@ -24,7 +24,9 @@
   }
 </script>
 
-<aside class="app-scrollbar w-56 flex-shrink-0 h-full overflow-y-auto bg-white border-r border-gray-200 py-4">
+<aside
+  class="app-scrollbar w-56 flex-shrink-0 h-full overflow-y-auto bg-white border-r border-gray-200 py-4"
+>
   <nav class="space-y-1 px-3">
     {#each navItems as item}
       <a

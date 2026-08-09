@@ -51,7 +51,7 @@
         endTime: '',
         duration: 0,
         compensation: undefined,
-        reason: ''
+        reason: '',
       });
       toastSuccess('提交成功', '加班申请已提交，等待审批');
       dispatch('submitted', created);
@@ -70,7 +70,7 @@
       endTime: '',
       duration: 0,
       compensation: undefined,
-      reason: ''
+      reason: '',
     });
     step = 'form';
     error = '';
@@ -79,14 +79,25 @@
   }
 </script>
 
-<Modal {open} title={step === 'form' ? '发起加班申请' : '申请预览'} size="lg" on:close={handleClose}>
+<Modal
+  {open}
+  title={step === 'form' ? '发起加班申请' : '申请预览'}
+  size="lg"
+  on:close={handleClose}
+>
   {#if error}
     <div class="mx-5 mt-4 p-3 bg-red-50 text-red-600 rounded-md text-sm">{error}</div>
   {/if}
 
   <div class="p-5">
     {#if step === 'form'}
-      <OvertimeForm formId={FORM_ID} applicant={CURRENT_USER} errors={formErrors} on:preview={() => handlePreviewClick()} on:cancel={handleClose} />
+      <OvertimeForm
+        formId={FORM_ID}
+        applicant={CURRENT_USER}
+        errors={formErrors}
+        on:preview={() => handlePreviewClick()}
+        on:cancel={handleClose}
+      />
     {:else}
       <PreviewForm application={$draft} />
       {#if submitting}

@@ -41,10 +41,7 @@
     if (filter.type && app.overtimeType !== filter.type) return false;
     if (filter.keyword) {
       const kw = filter.keyword.toLowerCase();
-      return (
-        app.applicant.name.toLowerCase().includes(kw) ||
-        app.reason.toLowerCase().includes(kw)
-      );
+      return app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw);
     }
     return true;
   });
@@ -58,10 +55,7 @@
     ? Math.max(0, Math.floor(scrollTop / ITEM_HEIGHT) - OVERSCAN)
     : 0;
   $: endIndex = useVirtualScroll
-    ? Math.min(
-        filtered.length,
-        Math.ceil((scrollTop + CONTAINER_HEIGHT) / ITEM_HEIGHT) + OVERSCAN
-      )
+    ? Math.min(filtered.length, Math.ceil((scrollTop + CONTAINER_HEIGHT) / ITEM_HEIGHT) + OVERSCAN)
     : filtered.length;
   $: visibleItems = useVirtualScroll ? filtered.slice(startIndex, endIndex) : filtered;
   $: offsetY = startIndex * ITEM_HEIGHT;
@@ -127,7 +121,9 @@
         </button>
         <span class="text-xs">（共 {selectableApps.length} 条待审批）</span>
         {#if useVirtualScroll}
-          <span class="text-xs text-muted-foreground/60 ml-auto">虚拟滚动模式（{filtered.length} 条）</span>
+          <span class="text-xs text-muted-foreground/60 ml-auto"
+            >虚拟滚动模式（{filtered.length} 条）</span
+          >
         {/if}
       </div>
     {/if}

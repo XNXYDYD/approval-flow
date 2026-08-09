@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { DateInput } from "date-picker-svelte";
-  import { cn } from "$lib/utils";
-  import { parseISO, isValid } from "date-fns";
-  import { createEventDispatcher } from "svelte";
+  import { DateInput } from 'date-picker-svelte';
+  import { cn } from '$lib/utils';
+  import { parseISO, isValid } from 'date-fns';
+  import { createEventDispatcher } from 'svelte';
 
-  export let value: string = "";
-  export let placeholder: string = "选择日期时间";
-  export let className: string = "";
+  export let value: string = '';
+  export let placeholder: string = '选择日期时间';
+  export let className: string = '';
   export let id: string | null = null;
   export let disabled: boolean = false;
 
@@ -67,7 +67,9 @@
     if (!timePicker) return null;
 
     const spans = timePicker.querySelectorAll('span[aria-label]');
-    let hours = 0, minutes = 0, seconds = 0;
+    let hours = 0,
+      minutes = 0,
+      seconds = 0;
 
     spans.forEach((span) => {
       const label = span.getAttribute('aria-label');
@@ -133,7 +135,7 @@
         baseDate.getDate(),
         timeValue.hours,
         timeValue.minutes,
-        timeValue.seconds
+        timeValue.seconds,
       );
     } else {
       // 没有时间修改，直接使用 baseDate（可能包含已有的时间）
@@ -144,7 +146,7 @@
     dateValue = finalDate;
     displayValue = finalDate;
     pendingDate = null;
-    dispatch("change", isoString);
+    dispatch('change', isoString);
 
     // 直接控制 visible 关闭弹窗，确保内部状态同步
     visible = false;
@@ -173,12 +175,12 @@
       value={displayValue}
       bind:visible
       {id}
-      placeholder={placeholder}
+      {placeholder}
       class={cn(
-        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-15",
-        !dateValue && "text-muted-foreground",
-        dateValue && "text-foreground",
-        className
+        'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-15',
+        !dateValue && 'text-muted-foreground',
+        dateValue && 'text-foreground',
+        className,
       )}
       timePrecision="second"
       format="yyyy-MM-dd HH:mm:ss"

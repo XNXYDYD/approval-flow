@@ -6,15 +6,14 @@
 
   function handleError(event: ErrorEvent) {
     reportError(event.error ?? new Error(event.message), {
-      description: event.message
+      description: event.message,
     });
   }
 
   function handleUnhandledRejection(event: PromiseRejectionEvent) {
-    reportError(
-      event.reason instanceof Error ? event.reason : new Error(String(event.reason)),
-      { description: '未捕获的 Promise 异常' }
-    );
+    reportError(event.reason instanceof Error ? event.reason : new Error(String(event.reason)), {
+      description: '未捕获的 Promise 异常',
+    });
   }
 
   onMount(() => {

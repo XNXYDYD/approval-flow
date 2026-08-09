@@ -7,7 +7,7 @@ const TRANSITIONS: Record<ApplicationStatus, ApplicationStatus[]> = {
   pending: ['approved', 'rejected', 'cancelled'],
   approved: ['cancelled'],
   rejected: ['pending'], // 驳回后可修改重新提交
-  cancelled: []
+  cancelled: [],
 };
 
 /** 判断从 from 到 to 的状态流转是否合法 */
@@ -23,13 +23,14 @@ export function transition(
   app: OvertimeApplication,
   nextStatus: ApplicationStatus,
   approver: Applicant,
-  comment: string
+  comment: string,
 ): OvertimeApplication {
   if (!canTransition(app.status, nextStatus)) {
     throw new Error(`非法状态流转：${app.status} → ${nextStatus}`);
   }
 
-  const action = nextStatus === 'approved' ? 'approve' : nextStatus === 'rejected' ? 'reject' : 'pending';
+  const action =
+    nextStatus === 'approved' ? 'approve' : nextStatus === 'rejected' ? 'reject' : 'pending';
 
   return {
     ...app,
@@ -42,9 +43,9 @@ export function transition(
         approver,
         action,
         comment,
-        timestamp: new Date().toISOString()
-      }
-    ]
+        timestamp: new Date().toISOString(),
+      },
+    ],
   };
 }
 
@@ -78,9 +79,12 @@ export function batchTransition(
   apps: OvertimeApplication[],
   nextStatus: ApplicationStatus,
   approver: Applicant,
-  comment: string
+  comment: string,
 ): { success: OvertimeApplication[]; failed: { app: OvertimeApplication; reason: string }[] } {
-  const result = { success: [] as OvertimeApplication[], failed: [] as { app: OvertimeApplication; reason: string }[] };
+  const result = {
+    success: [] as OvertimeApplication[],
+    failed: [] as { app: OvertimeApplication; reason: string }[],
+  };
   for (const app of apps) {
     if (!canTransition(app.status, nextStatus)) {
       result.failed.push({ app, reason: `非法流转：${app.status} → ${nextStatus}` });

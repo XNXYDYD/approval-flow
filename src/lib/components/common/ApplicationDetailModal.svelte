@@ -53,7 +53,7 @@
       approve: 'approved',
       reject: 'rejected',
       cancel: 'cancelled',
-      resubmit: 'pending'
+      resubmit: 'pending',
     };
     const nextStatus = statusMap[pendingAction!];
     if (!nextStatus) return;
@@ -63,7 +63,7 @@
       approve: { success: '审批通过', desc: '申请已通过审批' },
       reject: { success: '已驳回', desc: '申请已驳回' },
       cancel: { success: '已撤销', desc: '申请已撤销' },
-      resubmit: { success: '重新提交', desc: '申请已重新提交审批' }
+      resubmit: { success: '重新提交', desc: '申请已重新提交审批' },
     };
 
     try {
@@ -90,7 +90,7 @@
       endTime: app.endTime,
       duration: app.duration,
       compensation: app.compensation,
-      reason: app.reason
+      reason: app.reason,
     });
     dispatch('edit-application', app);
   }
@@ -101,21 +101,21 @@
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 
   function formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString('zh-CN', {
       month: '2-digit',
-      day: '2-digit'
+      day: '2-digit',
     });
   }
 
   function formatClock(iso: string): string {
     return new Date(iso).toLocaleTimeString('zh-CN', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 
@@ -128,11 +128,21 @@
 
   const actionConfig: Record<string, ActionConfig> = {
     submit: { label: '提交审批', icon: FileEdit, variant: 'default' },
-    approve: { label: '通过', icon: CheckCircle2, variant: 'default', class: 'bg-green-600 hover:bg-green-700' },
+    approve: {
+      label: '通过',
+      icon: CheckCircle2,
+      variant: 'default',
+      class: 'bg-green-600 hover:bg-green-700',
+    },
     reject: { label: '驳回', icon: X, variant: 'destructive' },
     cancel: { label: '撤销', icon: Ban, variant: 'secondary' },
     edit: { label: '修改', icon: Pencil, variant: 'default' },
-    resubmit: { label: '重新提交', icon: RefreshCw, variant: 'default', class: 'bg-green-600 hover:bg-green-700' }
+    resubmit: {
+      label: '重新提交',
+      icon: RefreshCw,
+      variant: 'default',
+      class: 'bg-green-600 hover:bg-green-700',
+    },
   };
 
   function actionLabel(action: string): string {
@@ -211,7 +221,9 @@
 
           <div class="space-y-1">
             <Label class="text-xs text-muted-foreground">加班事由</Label>
-            <div class="rounded-md bg-muted/40 px-3 py-2.5 text-sm leading-relaxed text-muted-foreground">
+            <div
+              class="rounded-md bg-muted/40 px-3 py-2.5 text-sm leading-relaxed text-muted-foreground"
+            >
               {app.reason}
             </div>
           </div>
@@ -232,18 +244,27 @@
               <div class="space-y-3.5">
                 {#each app.approvals as record}
                   <div class="relative pl-5">
-                    <div class="absolute -left-[1px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-white bg-blue-500" />
+                    <div
+                      class="absolute -left-[1px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-white bg-blue-500"
+                    />
                     <div class="flex items-center gap-2 text-sm">
                       <span class="font-medium text-foreground">{record.approver.name}</span>
                       <span class="text-muted-foreground">
-                        {record.action === 'approve' ? '通过' : record.action === 'reject' ? '驳回' : '提交'}
+                        {record.action === 'approve'
+                          ? '通过'
+                          : record.action === 'reject'
+                            ? '驳回'
+                            : '提交'}
                       </span>
                     </div>
                     <div class="text-xs text-muted-foreground mt-0.5">
-                      {formatDate(record.timestamp)} {formatClock(record.timestamp)}
+                      {formatDate(record.timestamp)}
+                      {formatClock(record.timestamp)}
                     </div>
                     {#if record.comment}
-                      <div class="text-sm text-muted-foreground mt-1 italic">"{record.comment}"</div>
+                      <div class="text-sm text-muted-foreground mt-1 italic">
+                        "{record.comment}"
+                      </div>
                     {/if}
                   </div>
                 {/each}
@@ -272,14 +293,8 @@
               class="resize-none"
             />
             <div class="flex justify-end gap-2">
-              <Button on:click={cancelAction} variant="outline" size="sm">
-                取消
-              </Button>
-              <Button
-                on:click={confirmAction}
-                disabled={processing}
-                size="sm"
-              >
+              <Button on:click={cancelAction} variant="outline" size="sm">取消</Button>
+              <Button on:click={confirmAction} disabled={processing} size="sm">
                 {processing ? '处理中...' : '确认'}
               </Button>
             </div>
@@ -288,12 +303,22 @@
           <div class="flex flex-wrap gap-2">
             {#each actions as action}
               {#if action === 'edit'}
-                <Button on:click={handleEdit} variant={actionConfig[action]?.variant} size="sm" class={actionConfig[action]?.class}>
+                <Button
+                  on:click={handleEdit}
+                  variant={actionConfig[action]?.variant}
+                  size="sm"
+                  class={actionConfig[action]?.class}
+                >
                   <svelte:component this={actionConfig[action]?.icon} class="mr-2 h-4 w-4" />
                   {actionConfig[action]?.label}
                 </Button>
               {:else}
-                <Button on:click={() => startAction(action)} variant={actionConfig[action]?.variant} size="sm" class={actionConfig[action]?.class}>
+                <Button
+                  on:click={() => startAction(action)}
+                  variant={actionConfig[action]?.variant}
+                  size="sm"
+                  class={actionConfig[action]?.class}
+                >
                   <svelte:component this={actionConfig[action]?.icon} class="mr-2 h-4 w-4" />
                   {actionConfig[action]?.label}
                 </Button>

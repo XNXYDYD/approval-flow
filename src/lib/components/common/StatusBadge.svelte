@@ -11,7 +11,7 @@
     pending: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
     approved: 'bg-green-100 text-green-700 hover:bg-green-200',
     rejected: 'bg-red-100 text-red-700 hover:bg-red-200',
-    cancelled: 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+    cancelled: 'bg-gray-100 text-gray-400 hover:bg-gray-200',
   };
 </script>
 

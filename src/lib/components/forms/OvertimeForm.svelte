@@ -8,7 +8,13 @@
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Label } from '$lib/components/ui/label';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from '$lib/components/ui/select';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
   // import { DatePicker } from '$lib/components/ui/date-picker'; // 旧组件（已替换为 DateTimePicker）
   // import { DateTimePicker } from '$lib/components/ui/date-time-picker'; // 方案B：shadcn-svelte 组件（已替换为 date-picker-svelte）
@@ -24,7 +30,7 @@
   function getDraftField(key: string): string | number {
     const val = ($draft as Record<string, unknown>)[key];
     if (val === undefined || val === null) return '';
-    return typeof val === 'number' ? val as number : String(val);
+    return typeof val === 'number' ? (val as number) : String(val);
   }
 
   function setDraftField(key: string, value: unknown) {
@@ -32,7 +38,7 @@
   }
 
   function updateDuration(start: string, end: string) {
-    const newDuration = (start && end) ? calcDuration(start, end) : 0;
+    const newDuration = start && end ? calcDuration(start, end) : 0;
     draft.update((d) => ({ ...d, duration: newDuration }));
   }
 
@@ -100,11 +106,14 @@
             selected={toSelected(getDraftField('overtimeType'))}
             onSelectedChange={handleSelectChange('overtimeType')}
           >
-            <SelectTrigger id="overtimeType" class={overtimeTypeError ? 'border-red-500 ring-1 ring-red-500' : ''}>
+            <SelectTrigger
+              id="overtimeType"
+              class={overtimeTypeError ? 'border-red-500 ring-1 ring-red-500' : ''}
+            >
               <SelectValue placeholder="请选择加班类型" />
             </SelectTrigger>
             <SelectContent>
-              {#each (OVERTIME_FIELDS.find((f) => f.key === 'overtimeType')?.options ?? []) as opt}
+              {#each OVERTIME_FIELDS.find((f) => f.key === 'overtimeType')?.options ?? [] as opt}
                 <SelectItem value={opt} label={LABEL_MAP[opt] ?? opt}>
                   {LABEL_MAP[opt] ?? opt}
                 </SelectItem>
@@ -126,11 +135,14 @@
             selected={toSelected(getDraftField('compensation'))}
             onSelectedChange={handleSelectChange('compensation')}
           >
-            <SelectTrigger id="compensation" class={compensationError ? 'border-red-500 ring-1 ring-red-500' : ''}>
+            <SelectTrigger
+              id="compensation"
+              class={compensationError ? 'border-red-500 ring-1 ring-red-500' : ''}
+            >
               <SelectValue placeholder="请选择补偿方式" />
             </SelectTrigger>
             <SelectContent>
-              {#each (OVERTIME_FIELDS.find((f) => f.key === 'compensation')?.options ?? []) as opt}
+              {#each OVERTIME_FIELDS.find((f) => f.key === 'compensation')?.options ?? [] as opt}
                 <SelectItem value={opt} label={LABEL_MAP[opt] ?? opt}>
                   {LABEL_MAP[opt] ?? opt}
                 </SelectItem>

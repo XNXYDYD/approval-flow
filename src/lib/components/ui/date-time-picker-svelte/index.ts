@@ -1,6 +1,3 @@
-import Root from "./date-time-picker-svelte.svelte";
+import Root from './date-time-picker-svelte.svelte';
 
-export {
-	Root,
-	Root as DateTimePickerSvelte,
-};
+export { Root, Root as DateTimePickerSvelte };

@@ -16,7 +16,7 @@ let counter = 0;
 
 export function showToast(
   message: string,
-  options: { description?: string; variant?: ToastVariant; duration?: number } = {}
+  options: { description?: string; variant?: ToastVariant; duration?: number } = {},
 ) {
   const id = `toast-${Date.now()}-${++counter}`;
   const toast: Toast = {
@@ -24,7 +24,7 @@ export function showToast(
     message,
     description: options.description,
     variant: options.variant ?? 'default',
-    duration: options.duration ?? 3000
+    duration: options.duration ?? 3000,
   };
 
   toasts.update((t) => [...t, toast]);

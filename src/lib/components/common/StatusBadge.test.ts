@@ -9,7 +9,7 @@ describe('StatusBadge 组件', () => {
     { status: 'pending', label: '待审批' },
     { status: 'approved', label: '已通过' },
     { status: 'rejected', label: '已驳回' },
-    { status: 'cancelled', label: '已撤销' }
+    { status: 'cancelled', label: '已撤销' },
   ];
 
   it.each(cases)('$status 正确渲染文案 label', ({ status, label }) => {

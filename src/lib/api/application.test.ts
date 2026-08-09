@@ -45,7 +45,7 @@ describe('createApplication', () => {
     endTime: '2026-08-01T20:00',
     duration: 2,
     compensation: 'timeoff',
-    reason: '测试创建申请'
+    reason: '测试创建申请',
   };
 
   it('创建成功并返回完整记录', async () => {
@@ -142,9 +142,11 @@ describe('updateApplication', () => {
       approver: MOCK_USERS[1],
       action: 'approve' as const,
       comment: '同意',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    const updated = await api.updateApplication(target.id, { approvals: [...target.approvals, newApproval] });
+    const updated = await api.updateApplication(target.id, {
+      approvals: [...target.approvals, newApproval],
+    });
 
     expect(updated?.approvals).toHaveLength(target.approvals.length + 1);
     expect(updated?.approvals[updated.approvals.length - 1].id).toBe('apr-test');

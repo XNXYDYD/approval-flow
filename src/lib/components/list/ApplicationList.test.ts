@@ -6,7 +6,7 @@ import type { ApplicationStatus } from '$lib/types';
 
 // Mock scrollTo on HTMLElement since jsdom doesn't implement it
 // @ts-expect-error - jsdom doesn't implement scrollTo, we need to mock it
-Element.prototype.scrollTo = function(x: number, y: number) {
+Element.prototype.scrollTo = function (x: number, y: number) {
   this.scrollLeft = x;
   this.scrollTop = y;
 };
@@ -27,20 +27,26 @@ describe('ApplicationList 组件', () => {
     });
 
     it('空列表显示暂无数据提示', () => {
-      const { container } = render(ApplicationList, { props: { loading: false, applications: [] } });
+      const { container } = render(ApplicationList, {
+        props: { loading: false, applications: [] },
+      });
       expect(container.textContent).toContain('暂无符合条件的申请记录');
     });
 
     it('正常渲染所有申请卡片（非虚拟滚动模式）', () => {
       const apps = generateMockApplications(10);
-      const { container } = render(ApplicationList, { props: { loading: false, applications: apps } });
+      const { container } = render(ApplicationList, {
+        props: { loading: false, applications: apps },
+      });
       const buttons = container.querySelectorAll('button[aria-label*="查看"]');
       expect(buttons.length).toBe(10);
     });
 
     it('超过 20 条数据启用虚拟滚动模式', () => {
       const apps = generateMockApplications(30);
-      const { container } = render(ApplicationList, { props: { loading: false, applications: apps } });
+      const { container } = render(ApplicationList, {
+        props: { loading: false, applications: apps },
+      });
       const scrollContainer = container.querySelector('.app-scrollbar');
       expect(scrollContainer).not.toBeNull();
     });
@@ -53,8 +59,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: { status: 'pending' as ApplicationStatus }
-        }
+          filter: { status: 'pending' as ApplicationStatus },
+        },
       });
       const buttons = container.querySelectorAll('button[aria-label*="查看"]');
       // 验证每个渲染的卡片都包含"待审批"状态
@@ -70,8 +76,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: { keyword: '张三' }
-        }
+          filter: { keyword: '张三' },
+        },
       });
       const buttons = container.querySelectorAll('button[aria-label*="查看"]');
       buttons.forEach((btn) => {
@@ -86,8 +92,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: { keyword: '不存在的关键词xyz' }
-        }
+          filter: { keyword: '不存在的关键词xyz' },
+        },
       });
       expect(container.textContent).toContain('暂无符合条件的申请记录');
     });
@@ -100,11 +106,11 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          selectable: true
-        }
+          selectable: true,
+        },
       });
-      const allBtn = Array.from(container.querySelectorAll('button')).find(
-        (btn) => btn.textContent?.includes('全选待审批')
+      const allBtn = Array.from(container.querySelectorAll('button')).find((btn) =>
+        btn.textContent?.includes('全选待审批'),
       );
       expect(allBtn).toBeTruthy();
     });
@@ -115,11 +121,11 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          selectable: false
-        }
+          selectable: false,
+        },
       });
-      const allBtn = Array.from(container.querySelectorAll('button')).find(
-        (btn) => btn.textContent?.includes('全选待审批')
+      const allBtn = Array.from(container.querySelectorAll('button')).find((btn) =>
+        btn.textContent?.includes('全选待审批'),
       );
       expect(allBtn).toBeFalsy();
     });
@@ -131,13 +137,13 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          selectable: true
-        }
+          selectable: true,
+        },
       });
       component.$on('select-all', (e: Event) => dispatched.push(e as CustomEvent));
 
-      const allBtn = Array.from(container.querySelectorAll('button')).find(
-        (btn) => btn.textContent?.includes('全选待审批')
+      const allBtn = Array.from(container.querySelectorAll('button')).find((btn) =>
+        btn.textContent?.includes('全选待审批'),
       );
       expect(allBtn).toBeTruthy();
       await fireEvent.click(allBtn!);
@@ -156,14 +162,14 @@ describe('ApplicationList 组件', () => {
           loading: false,
           applications: apps,
           selectable: true,
-          selectedIds: new Set(pendingIds)
-        }
+          selectedIds: new Set(pendingIds),
+        },
       });
       component.$on('deselect-all', (e: Event) => dispatched.push(e as CustomEvent));
 
       // 全选状态下按钮文案变为"取消全选"
-      const cancelBtn = Array.from(container.querySelectorAll('button')).find(
-        (btn) => btn.textContent?.includes('取消全选')
+      const cancelBtn = Array.from(container.querySelectorAll('button')).find((btn) =>
+        btn.textContent?.includes('取消全选'),
       );
       expect(cancelBtn).toBeTruthy();
 
@@ -179,8 +185,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: {}
-        }
+          filter: {},
+        },
       });
 
       // 模拟滚动到下方
@@ -211,8 +217,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: {}
-        }
+          filter: {},
+        },
       });
 
       // 滚动到很下方
@@ -235,7 +241,10 @@ describe('ApplicationList 组件', () => {
           expect(buttons.length).toBeGreaterThan(0);
         } else if (newScrollContainer) {
           // 虚拟滚动模式，检查 scrollTop 是否有效
-          const maxScroll = Math.max(0, newScrollContainer.scrollHeight - newScrollContainer.clientHeight);
+          const maxScroll = Math.max(
+            0,
+            newScrollContainer.scrollHeight - newScrollContainer.clientHeight,
+          );
           expect(newScrollContainer.scrollTop).toBeLessThanOrEqual(maxScroll);
         }
         return true;
@@ -248,8 +257,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: {}
-        }
+          filter: {},
+        },
       });
 
       const scrollContainer = container.querySelector('.app-scrollbar') as HTMLElement;
@@ -267,8 +276,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: {}
-        }
+          filter: {},
+        },
       });
 
       const scrollContainer = container.querySelector('.app-scrollbar') as HTMLElement;
@@ -279,10 +288,13 @@ describe('ApplicationList 组件', () => {
       component.$set({ filter: { keyword: '完全不存在的关键词abcdefg' } });
 
       // 等待空状态显示
-      await waitFor(() => {
-        expect(container.textContent).toContain('暂无符合条件的申请记录');
-        return true;
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(container.textContent).toContain('暂无符合条件的申请记录');
+          return true;
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('虚拟滚动模式下可见项数正确', () => {
@@ -291,8 +303,8 @@ describe('ApplicationList 组件', () => {
         props: {
           loading: false,
           applications: apps,
-          filter: {}
-        }
+          filter: {},
+        },
       });
 
       const scrollContainer = container.querySelector('.app-scrollbar') as HTMLElement;
@@ -315,7 +327,7 @@ describe('ApplicationList 组件', () => {
       const apps = generateMockApplications(5);
       const dispatched: CustomEvent[] = [];
       const { component, container } = render(ApplicationList, {
-        props: { loading: false, applications: apps }
+        props: { loading: false, applications: apps },
       });
       component.$on('open-detail', (e: Event) => dispatched.push(e as CustomEvent));
 
@@ -330,7 +342,7 @@ describe('ApplicationList 组件', () => {
       const apps = generateMockApplications(10);
       const dispatched: CustomEvent[] = [];
       const { component } = render(ApplicationList, {
-        props: { loading: false, applications: apps, selectable: true }
+        props: { loading: false, applications: apps, selectable: true },
       });
       component.$on('toggle-select', (e: Event) => dispatched.push(e as CustomEvent));
 

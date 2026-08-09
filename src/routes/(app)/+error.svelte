@@ -34,7 +34,7 @@
     </div>
     <h2 class="text-xl font-bold text-gray-800 mb-2">页面出错了</h2>
     <p class="text-gray-500 mb-6 text-sm">
-      {error instanceof Error ? error.message : error?.message ?? '很抱歉，页面加载时出现了问题'}
+      {error instanceof Error ? error.message : (error?.message ?? '很抱歉，页面加载时出现了问题')}
     </p>
     <div class="flex items-center justify-center gap-2">
       <button

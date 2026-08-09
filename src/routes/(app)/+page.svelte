@@ -40,10 +40,30 @@
   }
 
   $: cards = [
-    { label: '申请总数', value: $statistics.total, icon: ClipboardList, colorClass: 'bg-blue-50 text-blue-600' },
-    { label: '待审批', value: $statistics.byStatus.pending, icon: Hourglass, colorClass: 'bg-yellow-50 text-yellow-600' },
-    { label: '已通过', value: $statistics.byStatus.approved, icon: CheckCircle2, colorClass: 'bg-green-50 text-green-600' },
-    { label: '总加班时长', value: formatDuration($statistics.totalDuration), icon: Clock3, colorClass: 'bg-purple-50 text-purple-600' }
+    {
+      label: '申请总数',
+      value: $statistics.total,
+      icon: ClipboardList,
+      colorClass: 'bg-blue-50 text-blue-600',
+    },
+    {
+      label: '待审批',
+      value: $statistics.byStatus.pending,
+      icon: Hourglass,
+      colorClass: 'bg-yellow-50 text-yellow-600',
+    },
+    {
+      label: '已通过',
+      value: $statistics.byStatus.approved,
+      icon: CheckCircle2,
+      colorClass: 'bg-green-50 text-green-600',
+    },
+    {
+      label: '总加班时长',
+      value: formatDuration($statistics.totalDuration),
+      icon: Clock3,
+      colorClass: 'bg-purple-50 text-purple-600',
+    },
   ];
 
   $: recent = $applications.slice(0, 5);
@@ -146,11 +166,17 @@
           <FileEdit class="mr-2 h-4 w-4" />
           发起加班申请
         </Button>
-        <a href="/list" class="inline-flex items-center h-9 px-4 text-sm border border-input rounded-md hover:bg-accent transition">
+        <a
+          href="/list"
+          class="inline-flex items-center h-9 px-4 text-sm border border-input rounded-md hover:bg-accent transition"
+        >
           <ClipboardList class="mr-2 h-4 w-4" />
           查看全部申请
         </a>
-        <a href="/statistics" class="inline-flex items-center h-9 px-4 text-sm border border-input rounded-md hover:bg-accent transition">
+        <a
+          href="/statistics"
+          class="inline-flex items-center h-9 px-4 text-sm border border-input rounded-md hover:bg-accent transition"
+        >
           <BarChart3 class="mr-2 h-4 w-4" />
           <span class="text-gray-700">数据统计</span>
         </a>

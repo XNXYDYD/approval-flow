@@ -31,7 +31,7 @@
         role="status"
         class={cn(
           'flex items-start gap-3 rounded-lg border p-4 shadow-lg animate-in',
-          variantClass(toast.variant)
+          variantClass(toast.variant),
         )}
       >
         <svelte:component
@@ -51,7 +51,17 @@
           class="shrink-0 rounded p-1 -mr-1 -mt-1 hover:bg-black/5 transition-colors"
           aria-label="关闭"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>

@@ -91,19 +91,19 @@ export const OVERTIME_FIELDS: FieldConfig[] = [
     type: 'select',
     options: ['workday', 'weekend', 'holiday'],
     required: true,
-    placeholder: '请选择加班类型'
+    placeholder: '请选择加班类型',
   },
   {
     key: 'startTime',
     label: '开始时间',
     type: 'datetime',
-    required: true
+    required: true,
   },
   {
     key: 'endTime',
     label: '结束时间',
     type: 'datetime',
-    required: true
+    required: true,
   },
   {
     key: 'duration',
@@ -111,22 +111,22 @@ export const OVERTIME_FIELDS: FieldConfig[] = [
     type: 'number',
     required: true,
     min: 0.5,
-    max: 24
+    max: 24,
   },
   {
     key: 'compensation',
     label: '补偿方式',
     type: 'select',
     options: ['timeoff', 'pay'],
-    required: true
+    required: true,
   },
   {
     key: 'reason',
     label: '加班事由',
     type: 'textarea',
     required: true,
-    placeholder: '请详细描述加班事由（不少于10个字符）'
-  }
+    placeholder: '请详细描述加班事由（不少于10个字符）',
+  },
 ];
 
 // 中文标签映射（统一管理 UI 展示文案，避免散落各处）
@@ -140,5 +140,5 @@ export const LABEL_MAP: Record<string, string> = {
   pending: '待审批',
   approved: '已通过',
   rejected: '已驳回',
-  cancelled: '已撤销'
+  cancelled: '已撤销',
 };

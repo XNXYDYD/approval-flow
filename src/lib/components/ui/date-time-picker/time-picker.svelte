@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { cn } from "$lib/utils";
-  import { createEventDispatcher } from "svelte";
+  import { cn } from '$lib/utils';
+  import { createEventDispatcher } from 'svelte';
 
   export let hours: number = 0;
   export let minutes: number = 0;
@@ -18,15 +18,15 @@
   $: localMinutes = minutes;
   $: localSeconds = seconds;
 
-  const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
-  const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
-  const SECONDS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+  const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+  const SECONDS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
 
   function selectHour(val: string) {
     const num = parseInt(val, 10);
     if (!Number.isNaN(num)) {
       localHours = num;
-      dispatch("hoursChange", num);
+      dispatch('hoursChange', num);
     }
   }
 
@@ -34,7 +34,7 @@
     const num = parseInt(val, 10);
     if (!Number.isNaN(num)) {
       localMinutes = num;
-      dispatch("minutesChange", num);
+      dispatch('minutesChange', num);
     }
   }
 
@@ -42,7 +42,7 @@
     const num = parseInt(val, 10);
     if (!Number.isNaN(num)) {
       localSeconds = num;
-      dispatch("secondsChange", num);
+      dispatch('secondsChange', num);
     }
   }
 </script>
@@ -52,7 +52,9 @@
   <div class="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
     <span class="text-sm font-medium text-foreground">选择时间</span>
     <span class="font-mono text-sm tabular-nums text-muted-foreground">
-      {String(localHours).padStart(2, "0")}:{String(localMinutes).padStart(2, "0")}:{String(localSeconds).padStart(2, "0")}
+      {String(localHours).padStart(2, '0')}:{String(localMinutes).padStart(2, '0')}:{String(
+        localSeconds,
+      ).padStart(2, '0')}
     </span>
   </div>
 
@@ -67,10 +69,10 @@
             type="button"
             on:click={() => selectHour(h)}
             class={cn(
-              "w-full rounded-md px-2 py-1 text-center text-sm transition-colors",
+              'w-full rounded-md px-2 py-1 text-center text-sm transition-colors',
               parseInt(h, 10) === localHours
-                ? "bg-primary text-primary-foreground font-medium"
-                : "hover:bg-accent hover:text-accent-foreground text-foreground"
+                ? 'bg-primary text-primary-foreground font-medium'
+                : 'hover:bg-accent hover:text-accent-foreground text-foreground',
             )}
           >
             {h}
@@ -88,10 +90,10 @@
             type="button"
             on:click={() => selectMinute(m)}
             class={cn(
-              "w-full rounded-md px-2 py-1 text-center text-sm transition-colors",
+              'w-full rounded-md px-2 py-1 text-center text-sm transition-colors',
               parseInt(m, 10) === localMinutes
-                ? "bg-primary text-primary-foreground font-medium"
-                : "hover:bg-accent hover:text-accent-foreground text-foreground"
+                ? 'bg-primary text-primary-foreground font-medium'
+                : 'hover:bg-accent hover:text-accent-foreground text-foreground',
             )}
           >
             {m}
@@ -109,10 +111,10 @@
             type="button"
             on:click={() => selectSecond(s)}
             class={cn(
-              "w-full rounded-md px-2 py-1 text-center text-sm transition-colors",
+              'w-full rounded-md px-2 py-1 text-center text-sm transition-colors',
               parseInt(s, 10) === localSeconds
-                ? "bg-primary text-primary-foreground font-medium"
-                : "hover:bg-accent hover:text-accent-foreground text-foreground"
+                ? 'bg-primary text-primary-foreground font-medium'
+                : 'hover:bg-accent hover:text-accent-foreground text-foreground',
             )}
           >
             {s}

@@ -4,7 +4,10 @@ import type { ECharts } from 'echarts';
 /**
  * 将加班申请数据导出为 JSON 文件
  */
-export function exportToJSON(data: OvertimeApplication[], filename: string = 'overtime-applications'): void {
+export function exportToJSON(
+  data: OvertimeApplication[],
+  filename: string = 'overtime-applications',
+): void {
   const json = JSON.stringify(data, null, 2);
   downloadFile(json, `${filename}.json`, 'application/json');
 }
@@ -12,7 +15,10 @@ export function exportToJSON(data: OvertimeApplication[], filename: string = 'ov
 /**
  * 将加班申请数据导出为 CSV 文件
  */
-export function exportToCSV(data: OvertimeApplication[], filename: string = 'overtime-applications'): void {
+export function exportToCSV(
+  data: OvertimeApplication[],
+  filename: string = 'overtime-applications',
+): void {
   const headers = [
     '编号',
     '申请人',
@@ -25,7 +31,7 @@ export function exportToCSV(data: OvertimeApplication[], filename: string = 'ove
     '补偿方式',
     '加班事由',
     '状态',
-    '创建时间'
+    '创建时间',
   ];
 
   const rows = data.map((app) => [
@@ -40,12 +46,10 @@ export function exportToCSV(data: OvertimeApplication[], filename: string = 'ove
     LABEL_MAP[app.compensation] ?? app.compensation,
     escapeCSV(app.reason),
     LABEL_MAP[app.status] ?? app.status,
-    formatDate(app.createdAt)
+    formatDate(app.createdAt),
   ]);
 
-  const csv = [headers, ...rows]
-    .map((row) => row.join(','))
-    .join('\n');
+  const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
 
   downloadFile('\uFEFF' + csv, `${filename}.csv`, 'text/csv;charset=utf-8');
 }
@@ -58,7 +62,7 @@ export function exportChartToPNG(chart: ECharts, filename: string = 'chart'): vo
     const url = chart.getDataURL({
       type: 'png',
       pixelRatio: 2,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
     });
 
     const link = document.createElement('a');
@@ -100,7 +104,7 @@ function formatDate(iso: string): string {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 

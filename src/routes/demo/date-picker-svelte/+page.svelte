@@ -1,28 +1,36 @@
 <script lang="ts">
-  import DateTimePickerSvelte from "$lib/components/ui/date-time-picker-svelte/date-time-picker-svelte.svelte";
-  import DateTimePickerShadcn from "$lib/components/ui/date-time-picker-shadcn/date-time-picker-shadcn.svelte";
-  import { Button } from "$lib/components/ui/button";
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "$lib/components/ui/card";
-  import { Label } from "$lib/components/ui/label";
-  import { Input } from "$lib/components/ui/input";
-  import { calcDuration } from "$lib/utils/duration";
-  import { parseISO, isValid, format } from "date-fns";
+  import DateTimePickerSvelte from '$lib/components/ui/date-time-picker-svelte/date-time-picker-svelte.svelte';
+  import DateTimePickerShadcn from '$lib/components/ui/date-time-picker-shadcn/date-time-picker-shadcn.svelte';
+  import { Button } from '$lib/components/ui/button';
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from '$lib/components/ui/card';
+  import { Label } from '$lib/components/ui/label';
+  import { Input } from '$lib/components/ui/input';
+  import { calcDuration } from '$lib/utils/duration';
+  import { parseISO, isValid, format } from 'date-fns';
 
   // ========== date-picker-svelte Demo ==========
-  let startTimeSvelte = "";
-  let endTimeSvelte = "";
-  $: durationSvelte = (startTimeSvelte && endTimeSvelte) ? calcDuration(startTimeSvelte, endTimeSvelte) : 0;
+  let startTimeSvelte = '';
+  let endTimeSvelte = '';
+  $: durationSvelte =
+    startTimeSvelte && endTimeSvelte ? calcDuration(startTimeSvelte, endTimeSvelte) : 0;
 
   // ========== time-picker-svelte + Calendar Demo ==========
-  let startTimeShadcn = "";
-  let endTimeShadcn = "";
-  $: durationShadcn = (startTimeShadcn && endTimeShadcn) ? calcDuration(startTimeShadcn, endTimeShadcn) : 0;
+  let startTimeShadcn = '';
+  let endTimeShadcn = '';
+  $: durationShadcn =
+    startTimeShadcn && endTimeShadcn ? calcDuration(startTimeShadcn, endTimeShadcn) : 0;
 
   function handleReset() {
-    startTimeSvelte = "";
-    endTimeSvelte = "";
-    startTimeShadcn = "";
-    endTimeShadcn = "";
+    startTimeSvelte = '';
+    endTimeSvelte = '';
+    startTimeShadcn = '';
+    endTimeShadcn = '';
   }
 
   function handleTestData() {
@@ -39,11 +47,16 @@
   <title>日期时间选择器对比 Demo</title>
 </svelte:head>
 
-<div class="container mx-auto px-4 py-8 space-y-8 app-scrollbar" style="height: 100vh; overflow-y: auto;">
+<div
+  class="container mx-auto px-4 py-8 space-y-8 app-scrollbar"
+  style="height: 100vh; overflow-y: auto;"
+>
   <!-- 页面标题 -->
   <div class="text-center space-y-2">
     <h1 class="text-3xl font-bold">日期时间选择器对比 Demo</h1>
-    <p class="text-muted-foreground">方案一：date-picker-svelte vs 方案二：time-picker-svelte + Calendar</p>
+    <p class="text-muted-foreground">
+      方案一：date-picker-svelte vs 方案二：time-picker-svelte + Calendar
+    </p>
   </div>
 
   <!-- 操作按钮 -->
@@ -57,7 +70,10 @@
     <Card>
       <CardHeader>
         <div class="flex items-center gap-2">
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-900 text-xs font-bold">1</span>
+          <span
+            class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-900 text-xs font-bold"
+            >1</span
+          >
           <CardTitle>date-picker-svelte</CardTitle>
         </div>
         <CardDescription>轻量级，开箱即用，支持完整日期时间选择</CardDescription>
@@ -69,11 +85,13 @@
           <DateTimePickerSvelte
             placeholder="选择开始时间"
             value={startTimeSvelte}
-            on:change={(e) => { startTimeSvelte = e.detail; }}
+            on:change={(e) => {
+              startTimeSvelte = e.detail;
+            }}
           />
           {#if startTimeSvelte}
             <p class="text-xs text-muted-foreground">
-              {format(parseISO(startTimeSvelte), "yyyy/MM/dd HH:mm:ss")}
+              {format(parseISO(startTimeSvelte), 'yyyy/MM/dd HH:mm:ss')}
             </p>
           {/if}
         </div>
@@ -84,11 +102,13 @@
           <DateTimePickerSvelte
             placeholder="选择结束时间"
             value={endTimeSvelte}
-            on:change={(e) => { endTimeSvelte = e.detail; }}
+            on:change={(e) => {
+              endTimeSvelte = e.detail;
+            }}
           />
           {#if endTimeSvelte}
             <p class="text-xs text-muted-foreground">
-              {format(parseISO(endTimeSvelte), "yyyy/MM/dd HH:mm:ss")}
+              {format(parseISO(endTimeSvelte), 'yyyy/MM/dd HH:mm:ss')}
             </p>
           {/if}
         </div>
@@ -96,12 +116,7 @@
         <!-- 加班时长 -->
         <div class="space-y-2">
           <Label>加班时长（小时）</Label>
-          <Input
-            type="text"
-            value={String(durationSvelte)}
-            readonly
-            class="bg-muted/50"
-          />
+          <Input type="text" value={String(durationSvelte)} readonly class="bg-muted/50" />
         </div>
 
         <!-- 特性说明 -->
@@ -121,7 +136,10 @@
     <Card>
       <CardHeader>
         <div class="flex items-center gap-2">
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-900 text-xs font-bold">2</span>
+          <span
+            class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-900 text-xs font-bold"
+            >2</span
+          >
           <CardTitle>time-picker-svelte + Calendar</CardTitle>
         </div>
         <CardDescription>基于 shadcn-svelte 组件组合，样式完全统一</CardDescription>
@@ -133,11 +151,13 @@
           <DateTimePickerShadcn
             placeholder="选择开始时间"
             value={startTimeShadcn}
-            on:change={(e) => { startTimeShadcn = e.detail; }}
+            on:change={(e) => {
+              startTimeShadcn = e.detail;
+            }}
           />
           {#if startTimeShadcn}
             <p class="text-xs text-muted-foreground">
-              {format(parseISO(startTimeShadcn), "yyyy/MM/dd HH:mm:ss")}
+              {format(parseISO(startTimeShadcn), 'yyyy/MM/dd HH:mm:ss')}
             </p>
           {/if}
         </div>
@@ -148,11 +168,13 @@
           <DateTimePickerShadcn
             placeholder="选择结束时间"
             value={endTimeShadcn}
-            on:change={(e) => { endTimeShadcn = e.detail; }}
+            on:change={(e) => {
+              endTimeShadcn = e.detail;
+            }}
           />
           {#if endTimeShadcn}
             <p class="text-xs text-muted-foreground">
-              {format(parseISO(endTimeShadcn), "yyyy/MM/dd HH:mm:ss")}
+              {format(parseISO(endTimeShadcn), 'yyyy/MM/dd HH:mm:ss')}
             </p>
           {/if}
         </div>
@@ -160,12 +182,7 @@
         <!-- 加班时长 -->
         <div class="space-y-2">
           <Label>加班时长（小时）</Label>
-          <Input
-            type="text"
-            value={String(durationShadcn)}
-            readonly
-            class="bg-muted/50"
-          />
+          <Input type="text" value={String(durationShadcn)} readonly class="bg-muted/50" />
         </div>
 
         <!-- 特性说明 -->
@@ -218,7 +235,8 @@
       <CardTitle>组件文件结构</CardTitle>
     </CardHeader>
     <CardContent>
-      <pre class="rounded-md bg-muted p-4 text-sm overflow-x-auto"><code>{`
+      <pre class="rounded-md bg-muted p-4 text-sm overflow-x-auto"><code
+          >{`
 src/lib/components/ui/
 ├── date-time-picker-svelte/          # 方案一
 │   └── date-time-picker-svelte.svelte
@@ -231,7 +249,8 @@ src/lib/components/ui/
 ├── popover/                          # 已有组件
 ├── input/                            # 已有组件
 └── button/                           # 已有组件
-      `}</code></pre>
+      `}</code
+        ></pre>
     </CardContent>
   </Card>
 </div>

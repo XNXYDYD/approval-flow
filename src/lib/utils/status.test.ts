@@ -7,7 +7,7 @@ const mockApplicant: Applicant = {
   name: '张三',
   employeeId: 'E001',
   department: { id: 'd1', name: '技术部' },
-  email: 'z@c.com'
+  email: 'z@c.com',
 };
 
 const mockApp: OvertimeApplication = {
@@ -22,7 +22,7 @@ const mockApp: OvertimeApplication = {
   status: 'draft',
   createdAt: '2026-08-07T10:00',
   updatedAt: '2026-08-07T10:00',
-  approvals: []
+  approvals: [],
 };
 
 describe('canTransition', () => {
@@ -74,9 +74,7 @@ describe('transition', () => {
   });
 
   it('非法转换：抛出异常', () => {
-    expect(() => transition(mockApp, 'approved', mockApplicant, '')).toThrow(
-      '非法状态流转'
-    );
+    expect(() => transition(mockApp, 'approved', mockApplicant, '')).toThrow('非法状态流转');
   });
 });
 

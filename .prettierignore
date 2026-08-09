@@ -1,0 +1,8 @@
+node_modules
+.svelte-kit
+build
+dist
+coverage
+static
+*.min.js
+package-lock.json

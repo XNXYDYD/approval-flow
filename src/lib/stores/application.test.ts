@@ -6,7 +6,7 @@ import {
   filteredApplications,
   statistics,
   findApplication,
-  draft
+  draft,
 } from '$lib/stores/application';
 import { generateMockApplications } from '$lib/mock/applications';
 import type { OvertimeApplication } from '$lib/types';
@@ -107,10 +107,8 @@ describe('filteredApplications 派生 store', () => {
     expect(
       result.every(
         (a) =>
-          a.status === 'approved' &&
-          a.overtimeType === 'weekend' &&
-          a.applicant.name === '李四'
-      )
+          a.status === 'approved' && a.overtimeType === 'weekend' && a.applicant.name === '李四',
+      ),
     ).toBe(true);
   });
 
@@ -233,7 +231,11 @@ describe('statistics 派生 store', () => {
       status: 'pending',
       overtimeType: 'workday',
       duration: 10,
-      applicant: { ...mockApps[0].applicant, name: '测试人', department: { id: 'd4', name: '测试部', parentId: 'root' } }
+      applicant: {
+        ...mockApps[0].applicant,
+        name: '测试人',
+        department: { id: 'd4', name: '测试部', parentId: 'root' },
+      },
     };
     applications.update((apps) => [...apps, newApp]);
     const after = get(statistics);
@@ -296,7 +298,7 @@ describe('draft store', () => {
       endTime: '2026-08-01T20:00',
       duration: 2,
       compensation: 'timeoff',
-      reason: '测试事由'
+      reason: '测试事由',
     });
     expect(get(draft).overtimeType).toBe('workday');
     expect(get(draft).duration).toBe(2);
@@ -304,7 +306,14 @@ describe('draft store', () => {
   });
 
   it('update 可部分更新字段', () => {
-    draft.set({ overtimeType: undefined, startTime: '', endTime: '', duration: 0, compensation: undefined, reason: '' });
+    draft.set({
+      overtimeType: undefined,
+      startTime: '',
+      endTime: '',
+      duration: 0,
+      compensation: undefined,
+      reason: '',
+    });
     draft.update((d) => ({ ...d, reason: '新事由' }));
     expect(get(draft).reason).toBe('新事由');
     expect(get(draft).overtimeType).toBeUndefined();

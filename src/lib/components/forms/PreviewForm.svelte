@@ -16,8 +16,11 @@
     if (!iso) return '-';
     const d = new Date(iso);
     return d.toLocaleString('zh-CN', {
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit'
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 </script>
@@ -87,7 +90,9 @@
 
       <div class="space-y-1">
         <Label class="text-xs text-muted-foreground">加班事由</Label>
-        <div class="rounded-md bg-muted/40 px-3 py-2.5 text-sm leading-relaxed text-muted-foreground">
+        <div
+          class="rounded-md bg-muted/40 px-3 py-2.5 text-sm leading-relaxed text-muted-foreground"
+        >
           {application.reason ?? '-'}
         </div>
       </div>

@@ -14,7 +14,7 @@
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
+    xl: 'max-w-4xl',
   };
 
   // Dialog 内部触发关闭（ESC、遮罩点击、X 按钮）时通知父组件

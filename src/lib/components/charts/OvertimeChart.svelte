@@ -53,27 +53,27 @@
       case 'type':
         return {
           labels: Object.keys(statistics.byType).map((k) => LABEL_MAP[k] ?? k),
-          values: Object.values(statistics.byType)
+          values: Object.values(statistics.byType),
         };
       case 'status':
         return {
           labels: Object.keys(statistics.byStatus).map((k) => LABEL_MAP[k] ?? k),
-          values: Object.values(statistics.byStatus)
+          values: Object.values(statistics.byStatus),
         };
       case 'compensation':
         return {
           labels: Object.keys(statistics.byCompensation).map((k) => LABEL_MAP[k] ?? k),
-          values: Object.values(statistics.byCompensation)
+          values: Object.values(statistics.byCompensation),
         };
       case 'department':
         return {
           labels: Object.keys(statistics.byDepartment),
-          values: Object.values(statistics.byDepartment)
+          values: Object.values(statistics.byDepartment),
         };
       case 'trend':
         return {
           labels: statistics.trend.map((t) => t.date.slice(5)), // MM-DD
-          values: statistics.trend.map((t) => t.count)
+          values: statistics.trend.map((t) => t.count),
         };
       default:
         return { labels: [], values: [] };
@@ -95,22 +95,40 @@
                 radius: ['40%', '70%'],
                 avoidLabelOverlap: true,
                 label: { show: true, formatter: '{b}\n{d}%' },
-                data: labels.map((l, i) => ({ name: l, value: values[i] }))
-              }
-            ]
+                data: labels.map((l, i) => ({ name: l, value: values[i] })),
+              },
+            ],
           }
         : chartType === 'bar'
           ? {
               tooltip: { trigger: 'axis' },
-              xAxis: { type: 'category', data: labels, axisLabel: { rotate: labels.length > 5 ? 30 : 0 } },
+              xAxis: {
+                type: 'category',
+                data: labels,
+                axisLabel: { rotate: labels.length > 5 ? 30 : 0 },
+              },
               yAxis: { type: 'value', minInterval: 1 },
-              series: [{ type: 'bar', data: values, itemStyle: { color: '#3b82f6', borderRadius: [4, 4, 0, 0] } }]
+              series: [
+                {
+                  type: 'bar',
+                  data: values,
+                  itemStyle: { color: '#3b82f6', borderRadius: [4, 4, 0, 0] },
+                },
+              ],
             }
           : {
               tooltip: { trigger: 'axis' },
               xAxis: { type: 'category', data: labels, boundaryGap: false },
               yAxis: { type: 'value', minInterval: 1 },
-              series: [{ type: 'line', data: values, smooth: true, areaStyle: { opacity: 0.15 }, itemStyle: { color: '#10b981' } }]
+              series: [
+                {
+                  type: 'line',
+                  data: values,
+                  smooth: true,
+                  areaStyle: { opacity: 0.15 },
+                  itemStyle: { color: '#10b981' },
+                },
+              ],
             };
 
     chart.setOption(option, true);

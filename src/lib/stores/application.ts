@@ -1,9 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type {
-  OvertimeApplication,
-  ApplicationStatus,
-  OvertimeType
-} from '$lib/types';
+import type { OvertimeApplication, ApplicationStatus, OvertimeType } from '$lib/types';
 
 // 全局申请记录，提交时 push、审批/撤销时更新状态
 export const applications = writable<OvertimeApplication[]>([]);
@@ -15,7 +11,7 @@ export const draft = writable<Partial<OvertimeApplication>>({
   endTime: '',
   duration: 0,
   compensation: undefined,
-  reason: ''
+  reason: '',
 });
 
 // 筛选器
@@ -26,21 +22,16 @@ export const filter = writable<{
 }>({});
 
 // 筛选后的列表（派生：applications + filter 变化时自动重算）
-export const filteredApplications = derived(
-  [applications, filter],
-  ([$apps, $filter]) =>
-    $apps.filter((app) => {
-      if ($filter.status && app.status !== $filter.status) return false;
-      if ($filter.type && app.overtimeType !== $filter.type) return false;
-      if ($filter.keyword) {
-        const kw = $filter.keyword.toLowerCase();
-        return (
-          app.applicant.name.toLowerCase().includes(kw) ||
-          app.reason.toLowerCase().includes(kw)
-        );
-      }
-      return true;
-    })
+export const filteredApplications = derived([applications, filter], ([$apps, $filter]) =>
+  $apps.filter((app) => {
+    if ($filter.status && app.status !== $filter.status) return false;
+    if ($filter.type && app.overtimeType !== $filter.type) return false;
+    if ($filter.keyword) {
+      const kw = $filter.keyword.toLowerCase();
+      return app.applicant.name.toLowerCase().includes(kw) || app.reason.toLowerCase().includes(kw);
+    }
+    return true;
+  }),
 );
 
 // 统计数据（派生：applications 变化时自动重算）
@@ -52,7 +43,7 @@ export const statistics = derived(applications, ($apps) => {
     byCompensation: { timeoff: 0, pay: 0 },
     byDepartment: {} as Record<string, number>,
     totalDuration: 0,
-    trend: [] as Array<{ date: string; count: number; duration: number }>
+    trend: [] as Array<{ date: string; count: number; duration: number }>,
   };
 
   const trendMap = new Map<string, { count: number; duration: number }>();

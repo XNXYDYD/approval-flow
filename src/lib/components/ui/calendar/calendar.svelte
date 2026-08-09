@@ -11,12 +11,12 @@
     addMonths,
     subMonths,
     addYears,
-    subYears
-  } from "date-fns";
-  import { cn } from "$lib/utils";
-  import ChevronLeft from "lucide-svelte/icons/chevron-left";
-  import ChevronRight from "lucide-svelte/icons/chevron-right";
-  import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
+    subYears,
+  } from 'date-fns';
+  import { cn } from '$lib/utils';
+  import ChevronLeft from 'lucide-svelte/icons/chevron-left';
+  import ChevronRight from 'lucide-svelte/icons/chevron-right';
+  import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 
   export let selectedDate: Date | undefined;
   export let disabled: boolean = false;
@@ -45,7 +45,20 @@
   let showMonthDropdown = false;
   let showYearDropdown = false;
 
-  const MONTHS = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+  const MONTHS = [
+    '1月',
+    '2月',
+    '3月',
+    '4月',
+    '5月',
+    '6月',
+    '7月',
+    '8月',
+    '9月',
+    '10月',
+    '11月',
+    '12月',
+  ];
 
   const currentYear = new Date().getFullYear();
   const YEARS = Array.from({ length: 100 }, (_, i) => String(currentYear - 50 + i));
@@ -117,7 +130,7 @@
 
   $: updateViewDate(viewDate);
 
-  const daysOfWeek = ["日", "一", "二", "三", "四", "五", "六"];
+  const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
 </script>
 
 <div class="p-0 relative">
@@ -147,22 +160,27 @@
         <button
           type="button"
           class="flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-          on:click={() => { showMonthDropdown = !showMonthDropdown; showYearDropdown = false; }}
+          on:click={() => {
+            showMonthDropdown = !showMonthDropdown;
+            showYearDropdown = false;
+          }}
         >
           {MONTHS[viewDate.getMonth()]}
           <ChevronsUpDown class="h-3 w-3 opacity-50" />
         </button>
         {#if showMonthDropdown}
-          <div class="absolute top-full left-0 mt-1 w-24 max-h-48 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-lg z-50 app-scrollbar">
+          <div
+            class="absolute top-full left-0 mt-1 w-24 max-h-48 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-lg z-50 app-scrollbar"
+          >
             {#each MONTHS as m, i}
               <button
                 type="button"
                 on:click={() => selectMonth(i)}
                 class={cn(
-                  "w-full rounded-sm px-2 py-1 text-left text-sm transition-colors",
+                  'w-full rounded-sm px-2 py-1 text-left text-sm transition-colors',
                   i === viewDate.getMonth()
-                    ? "bg-accent text-accent-foreground font-medium"
-                    : "hover:bg-accent hover:text-accent-foreground"
+                    ? 'bg-accent text-accent-foreground font-medium'
+                    : 'hover:bg-accent hover:text-accent-foreground',
                 )}
               >
                 {m}
@@ -177,22 +195,27 @@
         <button
           type="button"
           class="flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-          on:click={() => { showYearDropdown = !showYearDropdown; showMonthDropdown = false; }}
+          on:click={() => {
+            showYearDropdown = !showYearDropdown;
+            showMonthDropdown = false;
+          }}
         >
-          {format(viewDate, "yyyy")}
+          {format(viewDate, 'yyyy')}
           <ChevronsUpDown class="h-3 w-3 opacity-50" />
         </button>
         {#if showYearDropdown}
-          <div class="absolute top-full left-0 mt-1 w-20 max-h-48 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-lg z-50 app-scrollbar">
+          <div
+            class="absolute top-full left-0 mt-1 w-20 max-h-48 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-lg z-50 app-scrollbar"
+          >
             {#each YEARS as y}
               <button
                 type="button"
                 on:click={() => selectYear(y)}
                 class={cn(
-                  "w-full rounded-sm px-2 py-1 text-left text-sm transition-colors",
+                  'w-full rounded-sm px-2 py-1 text-left text-sm transition-colors',
                   parseInt(y, 10) === viewDate.getFullYear()
-                    ? "bg-accent text-accent-foreground font-medium"
-                    : "hover:bg-accent hover:text-accent-foreground"
+                    ? 'bg-accent text-accent-foreground font-medium'
+                    : 'hover:bg-accent hover:text-accent-foreground',
                 )}
               >
                 {y}
@@ -240,24 +263,26 @@
               type="button"
               on:click={() => selectDate(day)}
               class={cn(
-                "focus:ring-day text-day hover:text-day focus:text-day relative flex h-9 w-9 cursor-pointer items-center justify-center whitespace-nowrap rounded-md p-0 text-center text-sm font-normal",
-                "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                !isSameMonth(day, viewDate) && "text-muted-foreground opacity-50",
-                isDayDisabled(day) && "text-muted-foreground opacity-50 hover:bg-transparent hover:text-muted-foreground cursor-not-allowed",
-                isToday(day) && "bg-accent text-accent-foreground",
-                isSelected(day) && cn(
-                  "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-                  "focus:bg-primary focus:text-primary-foreground"
-                )
+                'focus:ring-day text-day hover:text-day focus:text-day relative flex h-9 w-9 cursor-pointer items-center justify-center whitespace-nowrap rounded-md p-0 text-center text-sm font-normal',
+                'aria-selected:bg-accent aria-selected:text-accent-foreground',
+                !isSameMonth(day, viewDate) && 'text-muted-foreground opacity-50',
+                isDayDisabled(day) &&
+                  'text-muted-foreground opacity-50 hover:bg-transparent hover:text-muted-foreground cursor-not-allowed',
+                isToday(day) && 'bg-accent text-accent-foreground',
+                isSelected(day) &&
+                  cn(
+                    'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground',
+                    'focus:bg-primary focus:text-primary-foreground',
+                  ),
               )}
             >
-              {format(day, "d")}
+              {format(day, 'd')}
             </button>
           </div>
         {:else}
           <div class="p-0 text-center text-sm">
             <button type="button" class="invisible h-9 w-9 p-0" tabindex="-1">
-              {format(day, "d")}
+              {format(day, 'd')}
             </button>
           </div>
         {/if}
@@ -272,7 +297,10 @@
       aria-hidden="true"
       tabindex="-1"
       class="fixed inset-0 z-40 cursor-default"
-      on:click={() => { showMonthDropdown = false; showYearDropdown = false; }}
+      on:click={() => {
+        showMonthDropdown = false;
+        showYearDropdown = false;
+      }}
     ></button>
   {/if}
 </div>

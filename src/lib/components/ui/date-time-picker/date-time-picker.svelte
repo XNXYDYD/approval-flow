@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { Popover as PopoverPrimitive } from "bits-ui";
-  import { format, parseISO, isValid } from "date-fns";
-  import { cn, flyAndScale } from "$lib/utils";
-  import { Calendar } from "$lib/components/ui/calendar";
-  import { Button } from "$lib/components/ui/button";
-  import TimePicker from "./time-picker.svelte";
-  import CalendarIcon from "lucide-svelte/icons/calendar";
-  import { createEventDispatcher } from "svelte";
+  import { Popover as PopoverPrimitive } from 'bits-ui';
+  import { format, parseISO, isValid } from 'date-fns';
+  import { cn, flyAndScale } from '$lib/utils';
+  import { Calendar } from '$lib/components/ui/calendar';
+  import { Button } from '$lib/components/ui/button';
+  import TimePicker from './time-picker.svelte';
+  import CalendarIcon from 'lucide-svelte/icons/calendar';
+  import { createEventDispatcher } from 'svelte';
 
-  export let value: string = "";
-  export let placeholder: string = "选择日期时间";
+  export let value: string = '';
+  export let placeholder: string = '选择日期时间';
   export let disabled: boolean = false;
   export let id: string | undefined = undefined;
 
@@ -20,11 +20,11 @@
 
   let open = false;
   let selectedDate: Date | undefined = undefined;
-  
+
   // 内部存储的显示值（用于触发 UI 更新）
-  let displayValue = "";
+  let displayValue = '';
   // 记录上次外部传入的 value，用于判断是否需要同步
-  let lastExternalValue = "";
+  let lastExternalValue = '';
 
   // 临时时间状态（打开弹窗时从 value 解析）
   let tempHours = 0;
@@ -62,8 +62,8 @@
     tempHours = 0;
     tempMinutes = 0;
     tempSeconds = 0;
-    displayValue = "";
-    dispatch("change", "");
+    displayValue = '';
+    dispatch('change', '');
     open = false;
   }
 
@@ -72,18 +72,25 @@
       selectedDate = new Date();
     }
     console.log('[DateTimePicker] handleConfirm - selectedDate:', selectedDate);
-    console.log('[DateTimePicker] handleConfirm - tempHours:', tempHours, 'tempMinutes:', tempMinutes, 'tempSeconds:', tempSeconds);
-    
+    console.log(
+      '[DateTimePicker] handleConfirm - tempHours:',
+      tempHours,
+      'tempMinutes:',
+      tempMinutes,
+      'tempSeconds:',
+      tempSeconds,
+    );
+
     const result = new Date(selectedDate);
     result.setHours(tempHours, tempMinutes, tempSeconds, 0);
     const isoString = result.toISOString();
     console.log('[DateTimePicker] handleConfirm - result:', result, 'ISO:', isoString);
     console.log('[DateTimePicker] handleConfirm - displayValue before:', displayValue);
-    
+
     displayValue = isoString;
     console.log('[DateTimePicker] handleConfirm - displayValue after:', displayValue);
-    
-    dispatch("change", isoString);
+
+    dispatch('change', isoString);
     open = false;
   }
 
@@ -116,17 +123,17 @@
   }
 
   function getFormattedDisplay() {
-    if (!displayValue) return "";
+    if (!displayValue) return '';
     try {
       const d = parseISO(displayValue);
-      if (!isValid(d)) return "";
-      return format(d, "yyyy/MM/dd HH:mm:ss");
+      if (!isValid(d)) return '';
+      return format(d, 'yyyy/MM/dd HH:mm:ss');
     } catch {
-      return "";
+      return '';
     }
   }
 
-  $: tempTimeDisplay = `${String(tempHours).padStart(2, "0")}:${String(tempMinutes).padStart(2, "0")}:${String(tempSeconds).padStart(2, "0")}`;
+  $: tempTimeDisplay = `${String(tempHours).padStart(2, '0')}:${String(tempMinutes).padStart(2, '0')}:${String(tempSeconds).padStart(2, '0')}`;
 </script>
 
 <PopoverPrimitive.Root bind:open on:open-change={handleOpenChange}>
@@ -136,9 +143,9 @@
       {id}
       variant="outline"
       class={cn(
-        "w-full justify-start text-left font-normal",
-        !displayValue && "text-muted-foreground",
-        className
+        'w-full justify-start text-left font-normal',
+        !displayValue && 'text-muted-foreground',
+        className,
       )}
       {disabled}
     >
@@ -161,22 +168,27 @@
     <div class="flex">
       <!-- 左侧：日历 -->
       <div class="p-1 min-w-[280px]">
-        <Calendar
-          selectedDate={selectedDate}
-          onSelect={handleDateSelect}
-          showOutsideDays={false}
-        />
+        <Calendar {selectedDate} onSelect={handleDateSelect} showOutsideDays={false} />
       </div>
 
       <!-- 右侧：时间选择 -->
       <div class="flex flex-col border-l border-border" style="width: 200px;">
-        <TimePicker 
+        <TimePicker
           hours={tempHours}
           minutes={tempMinutes}
           seconds={tempSeconds}
-          on:hoursChange={(e) => { console.log('[DateTimePicker] hoursChange - detail:', e.detail); tempHours = e.detail; }}
-          on:minutesChange={(e) => { console.log('[DateTimePicker] minutesChange - detail:', e.detail); tempMinutes = e.detail; }}
-          on:secondsChange={(e) => { console.log('[DateTimePicker] secondsChange - detail:', e.detail); tempSeconds = e.detail; }}
+          on:hoursChange={(e) => {
+            console.log('[DateTimePicker] hoursChange - detail:', e.detail);
+            tempHours = e.detail;
+          }}
+          on:minutesChange={(e) => {
+            console.log('[DateTimePicker] minutesChange - detail:', e.detail);
+            tempMinutes = e.detail;
+          }}
+          on:secondsChange={(e) => {
+            console.log('[DateTimePicker] secondsChange - detail:', e.detail);
+            tempSeconds = e.detail;
+          }}
         />
       </div>
     </div>
@@ -185,7 +197,7 @@
     <div class="flex items-center justify-between border-t border-border px-3 py-2">
       <span class="text-xs text-muted-foreground">
         {#if selectedDate}
-          已选 {format(selectedDate, "yyyy/MM/dd")} {tempTimeDisplay}
+          已选 {format(selectedDate, 'yyyy/MM/dd')} {tempTimeDisplay}
         {:else}
           请选择日期
         {/if}
