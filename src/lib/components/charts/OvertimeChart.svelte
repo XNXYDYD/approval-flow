@@ -1,10 +1,10 @@
 <script lang="ts">
-  import * as echarts from 'echarts';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import { LABEL_MAP, type Statistics } from '$lib/types';
   import { exportChartToPNG } from '$lib/utils/export';
   import { toastSuccess, toastError } from '$lib/stores/toast';
   import Download from 'lucide-svelte/icons/download';
+  import { Skeleton } from '$lib/components/ui/skeleton';
 
   export let statistics: Statistics;
   export let chartType: 'pie' | 'bar' | 'line' = 'pie';
@@ -12,12 +12,23 @@
   export let title: string = '';
 
   let container: HTMLElement;
-  let chart: echarts.ECharts | null = null;
+  let chart: ReturnType<typeof import('echarts').init> | null = null;
+  let echartsModule: typeof import('echarts') | null = null;
+  let loading = true;
 
-  onMount(() => {
-    chart = echarts.init(container);
-    renderChart();
-    window.addEventListener('resize', handleResize);
+  onMount(async () => {
+    try {
+      echartsModule = await import('echarts');
+      loading = false;
+      await tick();
+      chart = echartsModule.init(container);
+      renderChart();
+      window.addEventListener('resize', handleResize);
+    } catch (e) {
+      console.error('ECharts 加载失败:', e);
+      toastError('图表加载失败', '请刷新页面重试');
+      loading = false;
+    }
   });
 
   onDestroy(() => {
@@ -26,7 +37,7 @@
   });
 
   // 数据变化时自动重绘
-  $: if (chart && statistics) {
+  $: if (chart && statistics && !loading) {
     renderChart();
   }
 
@@ -84,7 +95,7 @@
     if (!chart) return;
     const { labels, values } = getData();
 
-    const option: echarts.EChartsOption =
+    const option: import('echarts').EChartsOption =
       chartType === 'pie'
         ? {
             tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
@@ -139,16 +150,28 @@
   {#if title}
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-sm font-medium text-gray-700">{title}</h3>
-      <button
-        type="button"
-        on:click={handleExport}
-        class="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
-        title="导出为 PNG 图片"
-      >
-        <Download class="h-3 w-3" />
-        导出
-      </button>
+      {#if !loading}
+        <button
+          type="button"
+          on:click={handleExport}
+          class="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+          title="导出为 PNG 图片"
+        >
+          <Download class="h-3 w-3" />
+          导出
+        </button>
+      {/if}
     </div>
   {/if}
-  <div bind:this={container} class="w-full h-72"></div>
+  {#if loading}
+    <div class="w-full h-72 flex items-center justify-center">
+      <div class="space-y-4 w-full px-4">
+        <Skeleton class="h-4 w-3/4 mx-auto" />
+        <Skeleton class="h-3 w-1/2 mx-auto" />
+        <Skeleton class="h-3 w-2/3 mx-auto" />
+      </div>
+    </div>
+  {:else}
+    <div bind:this={container} class="w-full h-72"></div>
+  {/if}
 </div>
