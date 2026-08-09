@@ -1,13 +1,8 @@
-import {
-  CalendarDate,
-  createCalendar,
-  getLocalTimeZone,
-  today,
-} from "@internationalized/date";
+import type { CalendarDate } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 export function createDefaultCalendarDate(): CalendarDate {
-  const date = today(getLocalTimeZone());
-  return createCalendar(date.calendarIdentifier, date.year, date.month, date.day);
+  return today(getLocalTimeZone()) as CalendarDate;
 }
 
 export function parseTimeString(timeStr: string): { hours: number; minutes: number; seconds: number } | null {

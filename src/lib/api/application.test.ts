@@ -112,9 +112,11 @@ describe('updateApplication', () => {
     const updated = await api.updateApplication(target.id, { status: 'rejected' });
     const after = new Date().toISOString();
 
-    expect(updated?.updatedAt).not.toBe(target.updatedAt);
-    expect(updated?.updatedAt >= before).toBe(true);
-    expect(updated?.updatedAt <= after).toBe(true);
+    expect(updated).toBeDefined();
+    const updatedAt = updated!.updatedAt;
+    expect(updatedAt).not.toBe(target.updatedAt);
+    expect(updatedAt >= before).toBe(true);
+    expect(updatedAt <= after).toBe(true);
   });
 
   it('部分更新不影响其他字段', async () => {

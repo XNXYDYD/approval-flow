@@ -10,9 +10,12 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@sveltejs/adapter-auto": "^3.2.0",
     "@sveltejs/kit": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
@@ -23,6 +26,7 @@
     "autoprefixer": "^10.4.19",
     "bits-ui": "^0.22.0",
     "clsx": "^2.1.1",
+    "husky": "^9.1.7",
     "jsdom": "^24.0.0",
     "lucide-svelte": "^1.0.1",
     "postcss": "^8.4.38",

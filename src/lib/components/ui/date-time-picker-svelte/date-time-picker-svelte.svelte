@@ -164,8 +164,11 @@
 </script>
 
 <div class="relative w-full">
-  <!-- 日期时间字段外层容器（用于获取 DOM 引用） -->
-  <div bind:this={dateTimeField}>
+  <!-- 日期时间字段外层容器（用于获取 DOM 引用 + CSS 变量） -->
+  <div
+    bind:this={dateTimeField}
+    style="--date-picker-background: hsl(var(--background)); --date-picker-foreground: hsl(var(--foreground)); --date-picker-highlight-border: hsl(var(--ring)); --date-picker-highlight-shadow: hsl(var(--ring) / 0.3); --date-input-width: 100%"
+  >
     <DateInput
       value={displayValue}
       bind:visible
@@ -177,7 +180,6 @@
         dateValue && "text-foreground",
         className
       )}
-      style="--date-picker-background: hsl(var(--background)); --date-picker-foreground: hsl(var(--foreground)); --date-picker-highlight-border: hsl(var(--ring)); --date-picker-highlight-shadow: hsl(var(--ring) / 0.3); --date-input-width: 100%"
       timePrecision="second"
       format="yyyy-MM-dd HH:mm:ss"
       {disabled}

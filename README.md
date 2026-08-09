@@ -271,6 +271,83 @@ npm run test:watch
 7. **Mock 数据可预测**：30 条记录，覆盖各种状态与类型
 8. **响应式设计**：支持移动端到桌面端自适应
 
+## 📝 Git 提交规范（Conventional Commits）
+
+本项目使用 **Husky + commitlint** 强制遵循 Conventional Commits 规范。
+
+### 提交信息格式
+
+```
+<type>(<scope>): <subject>
+```
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| `type` | ✅ | 提交类型 |
+| `scope` | ❌ | 影响范围（可选） |
+| `subject` | ✅ | 简短描述（不超过 100 字符） |
+
+### type 类型说明
+
+| type | 说明 | 示例 |
+|------|------|------|
+| `feat` | 新功能 | `feat(form): 添加日期时间选择器` |
+| `fix` | 修复 Bug | `fix(api): 修复申请创建后数据未刷新` |
+| `docs` | 文档变更 | `docs: 更新 README 技术说明` |
+| `style` | 代码格式（不影响功能） | `style: 调整 CSS 变量间距` |
+| `refactor` | 重构（非新功能、非修复） | `refactor(store): 优化派生统计计算` |
+| `perf` | 性能优化 | `perf(list): 优化列表筛选性能` |
+| `test` | 增加/修改测试 | `test(status): 补充状态流转边界测试` |
+| `build` | 构建系统或外部依赖 | `build: 升级 vite 到 5.2` |
+| `ci` | CI 配置 | `ci: 添加 GitHub Actions 工作流` |
+| `chore` | 其他杂项 | `chore: 清理 node_modules` |
+| `revert` | 回滚 | `revert: 回滚 feat: 添加批量审批` |
+
+### scope 范围建议
+
+| scope | 说明 |
+|-------|------|
+| `form` | 表单组件 |
+| `list` | 列表组件 |
+| `chart` | 图表组件 |
+| `modal` | 弹窗组件 |
+| `store` | 全局状态管理 |
+| `api` | API 层 |
+| `utils` | 工具函数 |
+| `ui` | UI 基础组件 |
+| `mock` | Mock 数据 |
+| `types` | 类型定义 |
+| `router` | 路由/页面 |
+
+### 钩子说明
+
+| 钩子 | 触发时机 | 执行内容 |
+|------|----------|----------|
+| `pre-commit` | `git commit` 执行前 | `npm run check`（TypeScript / Svelte 类型检查） |
+| `commit-msg` | 提交信息写入后 | `commitlint` 校验提交信息格式 |
+
+### 自动初始化
+
+克隆项目后首次 `npm install` 会自动执行 `husky` 初始化钩子。如需手动初始化：
+
+```bash
+npx husky
+```
+
+### 跳过钩子（不推荐）
+
+在紧急情况下可使用 `--no-verify` 跳过钩子，但不建议日常开发使用：
+
+```bash
+git commit --no-verify -m "feat: 紧急修复"
+```
+
+### 配置文件
+
+- [commitlint.config.js](./commitlint.config.js) - 提交信息校验规则
+- [.husky/pre-commit](./.husky/pre-commit) - 预提交钩子脚本
+- [.husky/commit-msg](./.husky/commit-msg) - 提交信息钩子脚本
+
 ## 📄 License
 
 Private - 仅供面试评估使用。
