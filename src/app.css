@@ -212,3 +212,28 @@ body {
     border: none !important;
   }
 }
+
+/* 移除 button 点击后的默认 focus 边框 */
+/* button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+button:focus,
+button:active,
+button:focus-visible,
+button:visited {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+button::-moz-focus-inner {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+} */

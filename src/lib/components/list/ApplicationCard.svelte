@@ -56,7 +56,7 @@
     on:click={handleClick}
     on:keydown={handleCardKeydown}
     aria-label="查看 {currentApp.applicant.name} 的加班申请详情"
-    class="block w-full cursor-pointer transition-all duration-200 bg-transparent border-0 p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+    class="block w-full cursor-pointer transition-all duration-200 bg-transparent border-0 p-0 text-left outline-none focus:outline-none rounded-md"
   >
     <Card
       class="border border-border/60 hover:border-primary/30 hover:shadow-md transition-all duration-200"
