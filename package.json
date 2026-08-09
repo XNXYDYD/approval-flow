@@ -1,7 +1,7 @@
 {
   "name": "overtime-application",
   "version": "1.0.0",
-  "description": "加班申请管理系统 - 前端面试题实现",
+  "description": "加班申请管理系统",
   "private": true,
   "type": "module",
   "scripts": {

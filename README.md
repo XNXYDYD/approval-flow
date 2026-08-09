@@ -2,7 +2,6 @@
 
 > **项目版本**：v1.0.0
 > **技术栈**：SvelteKit + TypeScript + TailwindCSS + Vitest + Apache ECharts
-> **面试题**：前端技术方案实现
 
 ## 📖 项目简介
 
@@ -350,4 +349,4 @@ git commit --no-verify -m "feat: 紧急修复"
 
 ## 📄 License
 
-Private - 仅供面试评估使用。
+Private - All rights reserved.
