@@ -1,5 +1,5 @@
 <script lang="ts">
-  export const params: Record<string, string> = {};
+  import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import '../app.css';
   import { reportError } from '$lib/stores/error';
@@ -17,11 +17,13 @@
   }
 
   onMount(() => {
+    if (!browser) return;
     window.addEventListener('error', handleError);
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
   });
 
   onDestroy(() => {
+    if (!browser) return;
     window.removeEventListener('error', handleError);
     window.removeEventListener('unhandledrejection', handleUnhandledRejection);
   });

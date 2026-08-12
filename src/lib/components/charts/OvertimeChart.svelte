@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import { onMount, onDestroy, tick } from 'svelte';
   import { LABEL_MAP, type Statistics } from '$lib/types';
   import { exportChartToPNG } from '$lib/utils/export';
@@ -17,6 +18,7 @@
   let loading = true;
 
   onMount(async () => {
+    if (!browser) return;
     try {
       echartsModule = await import('echarts');
       loading = false;
@@ -32,6 +34,7 @@
   });
 
   onDestroy(() => {
+    if (!browser) return;
     window.removeEventListener('resize', handleResize);
     chart?.dispose();
   });

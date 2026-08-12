@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { PageData } from './$types';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
-  import { applications } from '$lib/stores/application';
-  import { ensureApplicationsLoaded, reloadApplications } from '$lib/utils/loader';
+  import { applications, setApplicationsFromOvertime } from '$lib/stores/application';
+  import { reloadApplications } from '$lib/utils/loader';
   import ApplicationList from '$lib/components/list/ApplicationList.svelte';
   import ApplicationCard from '$lib/components/list/ApplicationCard.svelte';
   import FormModal from '$lib/components/common/FormModal.svelte';
@@ -37,19 +37,23 @@
   import FileJson from 'lucide-svelte/icons/file-json';
   import FileSpreadsheet from 'lucide-svelte/icons/file-spreadsheet';
 
-  // 弹窗控制状态
+  export let data: PageData;
+
+  // 服务端预渲染数据 — 直接从 data 取
+  $: serverApps = data?.applications ?? [];
+  $: pagination = data?.pagination;
+  $: filters = data?.filters ?? {};
+
   let showFormModal = false;
   let formStep: 'form' | 'preview' = 'form';
   let showDetailModal = false;
   let selectedApp: OvertimeApplication | null = null;
-  let loading = true;
 
-  // 筛选器
-  let statusFilter: ApplicationStatus | '' = '';
-  let typeFilter: OvertimeType | '' = '';
-  let keyword = '';
+  // 使用服务端传入的 filters 初始化
+  let statusFilter: ApplicationStatus | '' = (filters?.status as ApplicationStatus) ?? '';
+  let typeFilter: OvertimeType | '' = (filters?.type as OvertimeType) ?? '';
+  let keyword = filters?.keyword ?? '';
 
-  // URL 参数白名单，防止注入非法值
   const VALID_STATUSES: ApplicationStatus[] = [
     'draft',
     'pending',
@@ -60,12 +64,10 @@
   const VALID_TYPES: OvertimeType[] = ['workday', 'weekend', 'holiday'];
   const VALID_MODALS = ['form', 'detail'] as const;
 
-  // 批量操作选中的 ID 集合
   let selectedIds: Set<string> = new Set();
   let batchProcessing = false;
   let batchMode = false;
 
-  // Select 值变化处理
   function onStatusChange(selected: { value: string; label?: string } | undefined) {
     statusFilter = (selected?.value ?? '') as ApplicationStatus;
     clearSelection();
@@ -79,12 +81,10 @@
     return { value, label: (LABEL_MAP as Record<string, string>)[value] ?? value };
   }
 
-  onMount(async () => {
-    await ensureApplicationsLoaded();
-    loading = false;
+  // 从 URL 参数初始化（客户端 hydration 后）
+  $: if (browser) {
     const params = $page.url.searchParams;
 
-    // URL 参数白名单校验，防止非法值注入
     const rawStatus = params.get('status');
     if (rawStatus && (VALID_STATUSES as string[]).includes(rawStatus)) {
       statusFilter = rawStatus as ApplicationStatus;
@@ -105,12 +105,12 @@
       } else if (urlModal === 'detail') {
         const id = params.get('id');
         if (id) {
-          const app = $applications.find((a) => a.id === id);
+          const app = serverApps.find((a) => a.id === id);
           if (app) openDetailModal(app);
         }
       }
     }
-  });
+  }
 
   $: if (browser) {
     const url = new URL(window.location.href);
@@ -129,8 +129,7 @@
     keyword: keyword || undefined,
   };
 
-  // 筛选后的列表（与 ApplicationList 内部一致）
-  $: filteredPendingIds = $applications
+  $: filteredPendingIds = (serverApps ?? [])
     .filter((app) => {
       if (statusFilter && app.status !== statusFilter) return false;
       if (typeFilter && app.overtimeType !== typeFilter) return false;
@@ -213,7 +212,6 @@
     if (!batchMode) clearSelection();
   }
 
-  // 列表事件处理
   function onCardClick(e: Event) {
     const ce = e as CustomEvent;
     openDetailModal(ce.detail);
@@ -236,11 +234,10 @@
     selectedIds = new Set();
   }
 
-  // 批量操作
   async function handleBatchAction(action: 'approve' | 'reject' | 'cancel') {
     if (selectedIds.size === 0) return;
 
-    const pendingApps = $applications.filter(
+    const pendingApps = (serverApps ?? []).filter(
       (a) => selectedIds.has(a.id) && a.status === 'pending',
     );
     if (pendingApps.length === 0) return;
@@ -323,7 +320,7 @@
   }
 
   function getFilteredApplications(): OvertimeApplication[] {
-    return $applications.filter((app) => {
+    return (serverApps ?? []).filter((app) => {
       if (statusFilter && app.status !== statusFilter) return false;
       if (typeFilter && app.overtimeType !== typeFilter) return false;
       if (keyword) {
@@ -367,60 +364,63 @@
   </div>
 
   <!-- 筛选器 -->
-  <div class="bg-white p-4 rounded-lg shadow flex flex-wrap gap-3 items-end">
-    <div class="flex flex-col gap-1">
-      <Label for="status-filter" class="text-xs text-gray-500">状态</Label>
-      <Select selected={toSelected(statusFilter)} onSelectedChange={onStatusChange}>
-        <SelectTrigger id="status-filter" class="h-9 w-32">
-          <SelectValue placeholder="全部" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="" label="全部">全部</SelectItem>
-          {#each Object.entries(LABEL_MAP).filter( ([k]) => ['draft', 'pending', 'approved', 'rejected', 'cancelled'].includes(k) ) as [key, label]}
-            <SelectItem value={key} {label}>{label}</SelectItem>
-          {/each}
-        </SelectContent>
-      </Select>
+  <section aria-labelledby="filter-title">
+    <h2 id="filter-title" class="sr-only">筛选条件</h2>
+    <div class="bg-white p-4 rounded-lg shadow flex flex-wrap gap-3 items-end">
+      <div class="flex flex-col gap-1">
+        <Label for="status-filter" class="text-xs text-gray-500">状态</Label>
+        <Select selected={toSelected(statusFilter)} onSelectedChange={onStatusChange}>
+          <SelectTrigger id="status-filter" class="h-9 w-32">
+            <SelectValue placeholder="全部" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="" label="全部">全部</SelectItem>
+            {#each Object.entries(LABEL_MAP).filter( ([k]) => ['draft', 'pending', 'approved', 'rejected', 'cancelled'].includes(k) ) as [key, label]}
+              <SelectItem value={key} {label}>{label}</SelectItem>
+            {/each}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <Label for="type-filter" class="text-xs text-gray-500">类型</Label>
+        <Select selected={toSelected(typeFilter)} onSelectedChange={onTypeChange}>
+          <SelectTrigger id="type-filter" class="h-9 w-32">
+            <SelectValue placeholder="全部" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="" label="全部">全部</SelectItem>
+            {#each ['workday', 'weekend', 'holiday'] as t}
+              <SelectItem value={t} label={LABEL_MAP[t]}>{LABEL_MAP[t]}</SelectItem>
+            {/each}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div class="flex flex-col gap-1 flex-1 min-w-[200px] max-w-[300px]">
+        <Label for="keyword-filter" class="text-xs text-gray-500">搜索</Label>
+        <Input
+          id="keyword-filter"
+          type="text"
+          bind:value={keyword}
+          placeholder="搜索申请人或事由..."
+          class="h-9"
+        />
+      </div>
+
+      <Button on:click={resetFilter} variant="outline" size="sm">重置</Button>
+
+      <Button
+        on:click={toggleBatchMode}
+        variant={batchMode ? 'default' : 'outline'}
+        size="sm"
+        class="gap-1"
+      >
+        <ListChecks class="h-4 w-4" />
+        批量操作
+      </Button>
     </div>
-
-    <div class="flex flex-col gap-1">
-      <Label for="type-filter" class="text-xs text-gray-500">类型</Label>
-      <Select selected={toSelected(typeFilter)} onSelectedChange={onTypeChange}>
-        <SelectTrigger id="type-filter" class="h-9 w-32">
-          <SelectValue placeholder="全部" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="" label="全部">全部</SelectItem>
-          {#each ['workday', 'weekend', 'holiday'] as t}
-            <SelectItem value={t} label={LABEL_MAP[t]}>{LABEL_MAP[t]}</SelectItem>
-          {/each}
-        </SelectContent>
-      </Select>
-    </div>
-
-    <div class="flex flex-col gap-1 flex-1 min-w-[200px] max-w-[300px]">
-      <Label for="keyword-filter" class="text-xs text-gray-500">搜索</Label>
-      <Input
-        id="keyword-filter"
-        type="text"
-        bind:value={keyword}
-        placeholder="搜索申请人或事由..."
-        class="h-9"
-      />
-    </div>
-
-    <Button on:click={resetFilter} variant="outline" size="sm">重置</Button>
-
-    <Button
-      on:click={toggleBatchMode}
-      variant={batchMode ? 'default' : 'outline'}
-      size="sm"
-      class="gap-1"
-    >
-      <ListChecks class="h-4 w-4" />
-      批量操作
-    </Button>
-  </div>
+  </section>
 
   <!-- 批量操作栏 -->
   {#if batchMode && hasSelectable}
@@ -472,17 +472,20 @@
   {/if}
 
   <!-- 列表 -->
-  <ApplicationList
-    applications={$applications}
-    {filter}
-    {loading}
-    selectable={batchMode && hasSelectable}
-    {selectedIds}
-    on:open-detail={onCardClick}
-    on:toggle-select={handleToggleSelect}
-    on:select-all={handleSelectAll}
-    on:deselect-all={handleDeselectAll}
-  />
+  <section aria-labelledby="list-title">
+    <h2 id="list-title" class="sr-only">申请列表</h2>
+    <ApplicationList
+      applications={serverApps ?? []}
+      {filter}
+      loading={false}
+      selectable={batchMode && hasSelectable}
+      {selectedIds}
+      on:open-detail={onCardClick}
+      on:toggle-select={handleToggleSelect}
+      on:select-all={handleSelectAll}
+      on:deselect-all={handleDeselectAll}
+    />
+  </section>
 </div>
 
 <!-- 发起申请弹窗 -->
